@@ -6,7 +6,7 @@ title: Lachlan Haydon
 title_separator: "-"
 subtitle: null
 name: Lachlan Haydon
-description: A Portfolio and Blog of Some of My Projects
+description: Physics & Business Information Systems Portfolio
 url: https://lachlan.site
 baseurl: null
 repository: lachlanhaydon/lachlanhaydon.github.io
@@ -16,7 +16,7 @@ masthead_title: null
 breadcrumbs: null
 words_per_minute: 200
 enable_copy_code_button: null
-copyright: null
+copyright: "Lachlan Haydon"
 copyright_url: null
 comments:
   provider: null
@@ -89,24 +89,27 @@ analytics:
 author:
   name: Lachlan Haydon
   avatar: /assets/images/profile.jpg
-  bio: Senior at Loyola Chicago | Student Researcher for the Telescope Array Project
-  location: Chicago, IL | Bay Area, CA
-  email: null
+  bio: "Physics & BIS Student at Loyola Chicago | Mulcahy Fellow Researching Lightning Dynamics"
+  location: "Chicago, IL"
+  email: lachhaydon@gmail.com
   links:
-    - label: lachhaydon@gmail.com
+    - label: "Email"
       icon: fas fa-fw fa-envelope-square
-    - label: GitHub
+      url: "mailto:lachhaydon@gmail.com"
+    - label: "GitHub"
       icon: fab fa-fw fa-github
-    - label: LinkedIn
-      icon: https://www.linkedin.com/in/lachlanhaydon/
+      url: "https://github.com/lachlanhaydon"
+    - label: "LinkedIn"
+      icon: fab fa-fw fa-linkedin
+      url: "https://www.linkedin.com/in/lachlanhaydon/"
 footer:
   links:
-    - label: GitHub
+    - label: "GitHub"
       icon: fab fa-fw fa-github
-      url: https://github.com/lachlanhaydon
-    - label: LinkedIn
+      url: "https://github.com/lachlanhaydon"
+    - label: "LinkedIn"
       icon: fab fa-fw fa-linkedin
-      url: https://linkedin.com/in/yourprofile
+      url: "https://linkedin.com/in/lachlanhaydon"
   since: "2026"
 include:
   - .htaccess
