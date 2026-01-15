@@ -2,7 +2,7 @@
 layout: single
 author_profile: true
 permalink: /
-title: "Lachlan HAydon"
+title: "Lachlan Haydon"
 excerpt: "Physics & Business Information Systems Student | Lightning Dynamics Researcher"
 ---
 
@@ -47,7 +47,7 @@ I started at the writing center my third semester of college, where I shared my 
 gave feedback students on their assignments. I was then promoted to lead tutor, giving me additional 
 responsibilites such as training and menotring new employees, as well as promoting the center at campus events. 
 I stepped down to spend time on Physics research, but enjoyed my time greatly in this role. I learnt 
-so much about how to communicate effectively and get ideas off in a constructive manner. 
+so much about how to communicate effectively and share ideas in a constructive manner. 
 
 
 ### **Physics Tutor**
