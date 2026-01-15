@@ -88,25 +88,19 @@ analytics:
     anonymize_ip: null
 author:
   name: Lachlan Haydon
-  avatar: /assets/images/profile.jpg
-  bio: "Physics & BIS Student at Loyola Chicago | Mulcahy Fellow Researching Lightning Dynamics"
+  avatar: /assets/images/profile.jpeg
+  bio: "Physics & BIS Student at Loyola Chicago"
   location: "Chicago, IL"
   email: lachhaydon@gmail.com
   links:
     - label: "Email"
       icon: fas fa-fw fa-envelope-square
       url: "mailto:lachhaydon@gmail.com"
-    - label: "GitHub"
-      icon: fab fa-fw fa-github
-      url: "https://github.com/lachlanhaydon"
     - label: "LinkedIn"
       icon: fab fa-fw fa-linkedin
       url: "https://www.linkedin.com/in/lachlanhaydon/"
 footer:
   links:
-    - label: "GitHub"
-      icon: fab fa-fw fa-github
-      url: "https://github.com/lachlanhaydon"
     - label: "LinkedIn"
       icon: fab fa-fw fa-linkedin
       url: "https://linkedin.com/in/lachlanhaydon"
