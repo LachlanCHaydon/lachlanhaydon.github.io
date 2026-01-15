@@ -2,6 +2,7 @@
 layout: single
 author_profile: true
 permalink: /
+masthead: false
 title: "Lachlan Haydon"
 excerpt: "Physics & Business Information Systems Student | Lightning Dynamics Researcher"
 ---
