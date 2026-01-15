@@ -1,12 +1,15 @@
----
-permalink: /projects/tgf-analysis/
-title: "TGF Lightning Analysis Pipeline"
-layout: single
-author_profile: true
-toc: true
-toc_label: "Contents"
-toc_sticky: true
----
+<div class="feature-row">
+    <h1 style="text-align: center; font-weight: 700;">Hello, I'm Lachlan.</h1>
+    <p style="text-align: center; font-size: 1.2em;">
+        I bridge the gap between <strong>Physics</strong> and <strong>Business Analytics</strong>. 
+        Currently researching Lightning Dynamics & Terrestrial Gamma-ray Flashes at Loyola University Chicago.
+    </p>
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="/research/" class="btn btn--primary btn--large">View My Research</a>
+    <a href="/resume/" class="btn btn--inverse btn--large">See Resume</a>
+</div>
 
 ## Overview
 
