@@ -32,8 +32,8 @@ I am currently researching lightning dynamics and terrestrial-gamma-flashes (TGF
 
 I research **Lightning Dynamics and Terrestrial Gamma-ray Flashes (TGFs)**. 
 TGFs are brief, intense burst of high-energy light (gamma rays) that happens in the Earth's atmosphere, 
-usually inside or above a thunderstorm. I am lucky enough to conduct research on these events.
-Some of my responsibilities include: 
+usually inside or above a thunderstorm. I am lucky enough to conduct research on these events. 
+Some things I have done for this project: 
 
 * Automate spectroscopic analysis technique to process high volumes of visual observations quickly
 * Developed an interface to simplify the plotting techniques used to present results. 
