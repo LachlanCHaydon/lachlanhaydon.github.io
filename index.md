@@ -5,7 +5,7 @@ permalink: /
 masthead: false
 title: "Lachlan Haydon"
 header:
-  overlay_image: /assets/images/header_animation.gif
+  overlay_image: /assets/images/lightanimation.gif
   overlay_filter: 0.5 
 ---
 Physics & Business Information Systems Student | Lightning Dynamics Researcher
