@@ -10,7 +10,7 @@ excerpt: "Physics & Business Information Systems Student | Lightning Dynamics Re
 
 I am a dual-degree student at **Loyola University Chicago** pursuing a B.S. in **Physics** and a B.B.A. in **Information Systems & Business Analytics** graduating in May of 2026.  
 
-I am currently researching lightning dynamics and terrestrial-gamma-flashes (TGFs) at Loyola with Dr. Rasha Abbasi for the Telescope Array Project. Quantative problem solving and making sense out of complex data is a passion I am trying to pursue. I am looking for new ways to apply the skills I've developed through my research experience. 
+I am currently researching lightning dynamics and terrestrial-gamma-flashes (TGFs) at Loyola with Dr. Rasha Abbasi for the Telescope Array Project. Quantative problem solving and making sense out of complex data is a passion I am trying to pursue. 
 
 ---
 
