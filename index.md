@@ -40,7 +40,8 @@ Some things I have done for this project:
 * Analyzed high-speed phantom video data to study breakdown mechanisms in atmospheric electricity.
 * Utilized Python for data analysis to correlate gamma-ray bursts with lightning leader development.
 * Co-authored a manuscript currently in review and currently working on another.
-  *A detailed summary of this work can be seen in my projects page*
+
+*A detailed summary of this work can be seen in my projects page*
 
 
 ### **Summer Intern Insurance Broker**
