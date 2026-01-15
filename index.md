@@ -5,6 +5,12 @@ permalink: /
 title: "Lachlan Haydon"
 excerpt: "Physics & Business Information Systems Student | Lightning Dynamics Researcher"
 ---
+<div style="text-align: center; margin-bottom: 2em;">
+  <a href="#about-me" class="btn btn--primary btn--large" style="margin: 5px;">About Me</a>
+  <a href="#experience" class="btn btn--primary btn--large" style="margin: 5px;">Experience</a>
+  <a href="/projects/" class="btn btn--info btn--large" style="margin: 5px;">Projects</a>
+  <a href="/resume/" class="btn btn--warning btn--large" style="margin: 5px;">Resume</a>
+</div>
 
 ## About Me
 
