@@ -60,10 +60,10 @@ so much about how to communicate effectively and share ideas in a constructive m
 ### **Physics Tutor**
 **Loyola University Chicago** | *Jan 2025 – Present*
 
-### **Summer Grounds Keeper **
+### **Summer Grounds Keeper**
 **St. Simon Parish and School** | *Summer 2023, 2024*
 
-### **Lifeguard **
+### **Lifeguard**
 **Halas Recreation Center (Currently), Many Previous Locations** | *2019– Present*
 
 
