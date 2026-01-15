@@ -4,6 +4,10 @@ author_profile: true
 permalink: /
 masthead: false
 title: "Lachlan Haydon"
+header:
+  overlay_image: /assets/images/header_animation.gif
+  overlay_filter: 0.5 
+---
 excerpt: "Physics & Business Information Systems Student | Lightning Dynamics Researcher"
 ---
 <div style="text-align: center; margin-bottom: 2em;">
