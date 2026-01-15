@@ -6,7 +6,7 @@ title: Lachlan Haydon
 title_separator: "-"
 subtitle: null
 name: Lachlan Haydon
-description: Physics & Business Information Systems Portfolio
+description: Physics & Business Information Systems 
 url: https://lachlan.site
 baseurl: null
 repository: lachlanhaydon/lachlanhaydon.github.io
@@ -89,7 +89,7 @@ analytics:
 author:
   name: Lachlan Haydon
   avatar: /assets/images/profile.jpeg
-  bio: "Physics & BIS Student at Loyola Chicago"
+  bio: "Physics & INFS Student at Loyola Chicago"
   location: "Chicago, IL"
   email: lachhaydon@gmail.com
   links:
