@@ -16,19 +16,20 @@ I am currently researching lightning dynamics and terrestrial-gamma-flashes (TGF
 
 ## Experience
 
-### **Physics Researcher - Fellowship **
+### **Physics Researcher *(Fellowship)***
 **Loyola University Chicago** | *Jan 2025 – Present*
 
 I research **Lightning Dynamics and Terrestrial Gamma-ray Flashes (TGFs)**. 
-TGFs brief, intense burst of high-energy light (gamma rays) that happens in the Earth's atmosphere, 
-usually inside or above a thunderstorm. I am lucky enough to conduct research on these events, 
-Some of my responsibiities include: 
+TGFs are brief, intense burst of high-energy light (gamma rays) that happens in the Earth's atmosphere, 
+usually inside or above a thunderstorm. I am lucky enough to conduct research on these events.
+Some of my responsibilities include: 
 
 * Automate spectroscopic analysis technique to process high volumes of visual observations quickly
 * Developed an interface to simplify the plotting techniques used to present results. 
 * Analyzed high-speed phantom video data to study breakdown mechanisms in atmospheric electricity.
 * Utilized Python for data analysis to correlate gamma-ray bursts with lightning leader development.
-* Co-authored a manuscript currently in review and currently working on another. 
+* Co-authored a manuscript currently in review and currently working on another.
+  *A detailed summary of this work can be seen in my projects page*
 
 
 ### **Summer Intern Insurance Broker**
