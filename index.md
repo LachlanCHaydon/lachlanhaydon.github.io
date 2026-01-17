@@ -9,7 +9,7 @@ header:
   overlay_filter: 0.5 
 ---
 Physics & Information Systems Student 
-Lightning Dynamics Researcher
+Research Assistant
 ---
 <div style="text-align: center; margin-bottom: 2em;">
   <a href="#about-me" class="btn btn--primary btn--large" style="margin: 5px;">About Me</a>
