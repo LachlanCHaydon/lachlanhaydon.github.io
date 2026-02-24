@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lachlan Haydon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/assets/index-DepN8GDb.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D0vb5eLh.css">
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#resume">Resume</a>
+    </nav>
+
+    <section id="hero">
+      <div class="scroll-hint">
+        <span>scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <h2>About</h2>
+      <div class="about-grid">
+        <div class="about-photo">
+          <img src="/images/profile.jpeg" alt="Lachlan Haydon" />
+        </div>
+        <div class="about-text">
+          <p>
+            I am a dual-degree student at <strong>Loyola University Chicago</strong>
+            pursuing a B.S. in <strong>Physics</strong> and a B.B.A. in
+            <strong>Information Systems &amp; Business Analytics</strong>,
+            graduating in May 2026.
+          </p>
+          <p>
+            I am currently researching lightning dynamics and Terrestrial
+            Gamma-ray Flashes (TGFs) at Loyola with Dr. Rasha Abbasi for
+            the Telescope Array Project.
+          </p>
+        </div>
+        <div class="about-links">
+          <a href="mailto:lachhaydon@gmail.com">Email</a>
+          <a href="https://www.linkedin.com/in/lachlanhaydon/" target="_blank">LinkedIn</a>
+          <a href="https://github.com/LachlanCHaydon" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="section">
+      <h2>Experience</h2>
+      <div class="experience-list">
+
+        <div class="experience-item">
+          <div class="experience-meta">
+            <span class="experience-date">Jan 2025 — Present</span>
+          </div>
+          <div class="experience-body">
+            <h3>Research Assistant</h3>
+            <span class="experience-company">Loyola University Chicago</span>
+            <p>
+              Researching Lightning Dynamics and Terrestrial Gamma-ray Flashes (TGFs)
+              under Dr. Rasha Abbasi for the Telescope Array Project. Automated
+              spectroscopic analysis, developed an interactive visualization GUI,
+              and analyzed high-speed phantom video data. Co-authored a manuscript
+              currently in review.
+            </p>
+          </div>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-meta">
+            <span class="experience-date">Jun 2025 — Aug 2025</span>
+          </div>
+          <div class="experience-body">
+            <h3>Risk Management  &amp; Insurance Brokerage Intern</h3>
+            <span class="experience-company">Marsh</span>
+            <p>
+              Summer associate at the world's largest insurance brokerage.
+              Placed in the Middle-Market Casualty team, gaining experience
+              understanding coverages, negotiating with underwriters, and
+              helping submit policies during the 7/1 busy season.
+            </p>
+          </div>
+        </div>
+
+      
+
+        <div class="experience-item">
+          <div class="experience-meta">
+            <span class="experience-date">Sep 2023 — Dec 2024</span>
+          </div>
+          <div class="experience-body">
+            <h3>Lead Writing Center Tutor</h3>
+            <span class="experience-company">Loyola University Chicago</span>
+            <p>
+              Started as a writing tutor sharing expertise and giving feedback
+              on student assignments. Promoted to lead tutor with additional
+              responsibilities including training and mentoring new employees
+              and promoting the center at campus events.
+            </p>
+          </div>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-meta">
+            <span class="experience-date">2019 Present</span>
+          </div>
+          <div class="experience-body">
+            <h3>Part Time Roles: Lifeguard, Physics Tutor, Grounds Keeper</h3>
+            <span class="experience-company"></span>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <h2>Projects</h2>
+      <div class="projects-grid">
+
+        <!-- Lightning Research Card -->
+        <div class="project-card" data-target="detail-lightning">
+          <div class="project-card-inner">
+            <img src="/images/lightanimation.gif" alt="Lightning & TGF Research" />
+            <div class="project-card-overlay">
+              <h3>TGFs &amp; Lightning Dynamics</h3>
+              <span>Telescope Array &middot; Loyola University Chicago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quantum Mechanics Card -->
+        <div class="project-card" data-target="detail-quantum">
+          <div class="project-card-inner">
+            <div class="project-card-placeholder">
+              <span>In Development</span>
+            </div>
+            <div class="project-card-overlay">
+              <h3>Quantum Mechanics Visualizations</h3>
+              <span>Interactive Learning Tools</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Lightning Project Detail (hidden until card clicked) -->
+      <div class="project-detail" id="detail-lightning">
+        <button class="project-detail-close" aria-label="Close">&times;</button>
+
+        <div class="project-detail-hero">
+          <img src="/images/lightanimation.gif" alt="Lightning animation" />
+        </div>
+
+        <div class="project-detail-content">
+          <h3>Terrestrial Gamma-ray Flashes &amp; Lightning Dynamics</h3>
+          <p class="project-detail-meta">
+            Mulcahy Fellowship &mdash; Loyola University Chicago
+            &middot; Advisor: Dr. Rasha Abbasi
+            &middot; Telescope Array Collaboration
+          </p>
+
+          <p>
+            Terrestrial Gamma-ray Flashes (TGFs) are brief, intense bursts of gamma
+            radiation originating within thunderstorms, believed to be produced by
+            Relativistic Runaway Electron Avalanches (RREA) during lightning leader
+            propagation. This research examines connections between TGFs and lightning
+            processes using a multi-instrument detection system in Delta, Utah.
+          </p>
+
+          <h4>Detection Instruments</h4>
+          <ul>
+            <li><strong>VHF Interferometry (INTF)</strong> &mdash; Lightning channel imaging</li>
+            <li><strong>Fast Antenna (FA)</strong> &mdash; Electric field measurements</li>
+            <li><strong>Surface Detectors (TASD)</strong> &mdash; 507-detector gamma-ray array</li>
+            <li><strong>High-speed Photometry</strong> &mdash; Multi-channel optical measurements at 337nm, 391nm, 777nm</li>
+            <li><strong>Spectroscopy</strong> &mdash; Wavelength-resolved lightning emissions</li>
+          </ul>
+
+          <h4>Calibration &amp; Data Fusion</h4>
+          <p>
+            I recreated a  cross-matching calibration method for VHF interferometry using
+            GPS-referenced Lightning Mapping Array data, achieving ~0.059&deg; angular
+            accuracy. 
+          </p>
+
+          <h4>TGF Tool</h4>
+          <p>
+            Built a modular desktop application in Python and tkinter for unified
+            multi-instrument visualization and analysis. Features include interactive
+            plotting with configurable binning and colormaps, project-based file
+            management via JSON schema, and tab-based navigation across instrument views.
+          </p>
+
+          <div class="project-detail-images">
+            <img src="/images/mainTab.png" alt="TGF Tool — Main Tab" />
+            <img src="/images/spectroTab.png" alt="TGF Tool — Spectroscopy Tab" />
+          </div>
+
+   
+
+          <h4>Publication</h4>
+          <p class="project-detail-pub">
+            <em>Observation of a Downward Terrestrial Gamma-Ray Flash Associated
+            with Dart Leaders</em> &mdash; Atmospheres (submitted December 2025)
+            <br />N. Kieu, R. U. Abbasi, et al.
+          </p>
+           <h4>Presentation</h4>
+          <p class="project-detail-pub">
+            <em>Studying the Optical Emission of Lightning at the Telescope Array Detector</em> &mdash; American Physical Society Global Summit, March 2026
+            <br /> L. Haydon, R. Abbasi, et al.
+          </p>
+
+
+
+          <p class="project-detail-tech">
+            Python 3.9+ &middot; NumPy &middot; Matplotlib &middot; SciPy
+            &middot; tkinter &middot; JSON &middot; CSV &middot; HDF5
+          </p>
+        </div>
+      </div>
+
+      <!-- Quantum Project Detail (placeholder) -->
+      <div class="project-detail" id="detail-quantum">
+        <button class="project-detail-close" aria-label="Close">&times;</button>
+        <div class="project-detail-content">
+          <h3>Quantum Mechanics Visualizations</h3>
+          <p>This project is currently in development. Check back soon!</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="resume" class="section">
+      <h2>Resume</h2>
+      <div class="resume-wrapper">
+        <div class="resume-actions">
+          <a href="/files/Resume.pdf" download class="resume-btn">Download PDF</a>
+        </div>
+        <div class="resume-embed">
+          <iframe src="/files/Resume.pdf" title="Lachlan Haydon Resume"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Lachlan Haydon &mdash; <span id="footer-year"></span></p>
+    </footer>
+
+  </body>
+</html>
