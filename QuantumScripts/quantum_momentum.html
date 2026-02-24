@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Momentum Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --bg-deep: #06080f;
+    --bg-panel: #0c1020;
+    --bg-card: #111630;
+    --border: #1a2040;
+    --border-glow: #2a3570;
+    --text: #c8cee8;
+    --text-dim: #6b7399;
+    --text-bright: #e8ecff;
+    --accent-cyan: #4ecdc4;
+    --accent-pink: #ff6b9d;
+    --accent-gold: #ffd93d;
+    --accent-blue: #4da6ff;
+    --accent-purple: #a78bfa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  header {
+    text-align: center;
+    padding: 2.5rem 1rem 1rem;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.3rem;
+  }
+
+  h1 span {
+    color: var(--accent-cyan);
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* Tab navigation */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin: 1.5rem auto 0;
+    padding: 0.25rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-width: 600px;
+    width: calc(100% - 2rem);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.04em;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    background: var(--bg-card);
+    color: var(--accent-cyan);
+    box-shadow: 0 2px 12px rgba(78, 205, 196, 0.15);
+  }
+
+  /* Main content */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Canvas area */
+  .plot-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  @media (max-width: 700px) {
+    .plot-row { grid-template-columns: 1fr; }
+  }
+
+  .plot-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plot-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .plot-card.position::before { background: linear-gradient(90deg, var(--accent-cyan), transparent); }
+  .plot-card.momentum::before { background: linear-gradient(90deg, var(--accent-pink), transparent); }
+  .plot-card.combined::before { background: linear-gradient(90deg, var(--accent-gold), transparent); }
+
+  .plot-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .plot-label .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .plot-label.pos-label .dot { background: var(--accent-cyan); }
+  .plot-label.mom-label .dot { background: var(--accent-pink); }
+  .plot-label.comb-label .dot { background: var(--accent-gold); }
+
+  canvas {
+    width: 100%;
+    height: 220px;
+    display: block;
+    border-radius: 6px;
+  }
+
+  /* Controls */
+  .controls-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .control-group label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .control-group label span.val {
+    float: right;
+    color: var(--accent-cyan);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Preset buttons */
+  .preset-row {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+
+  .preset-btn {
+    padding: 0.4rem 0.8rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.04em;
+  }
+
+  .preset-btn:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: rgba(78, 205, 196, 0.05);
+  }
+
+  .preset-btn.active {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: rgba(78, 205, 196, 0.1);
+  }
+
+  /* Info callouts */
+  .info-box {
+    background: var(--bg-panel);
+    border-left: 2px solid var(--accent-cyan);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .info-box strong {
+    color: var(--accent-cyan);
+  }
+
+  .info-box .eq {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--text-bright);
+    font-size: 0.9rem;
+  }
+
+  /* Metrics bar */
+  .metrics-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .metric {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    text-align: center;
+  }
+
+  .metric .label {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.2rem;
+  }
+
+  .metric .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+
+  .metric .value.cyan { color: var(--accent-cyan); }
+  .metric .value.pink { color: var(--accent-pink); }
+  .metric .value.gold { color: var(--accent-gold); }
+  .metric .value.purple { color: var(--accent-purple); }
+
+  /* Plane wave tab */
+  .full-plot {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .full-plot::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), transparent);
+  }
+
+  canvas.tall { height: 260px; }
+
+  /* Animate in */
+  .plot-card, .controls-panel, .info-box, .metrics-bar {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Superposition controls */
+  .super-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .super-controls .control-group label {
+    font-size: 0.62rem;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .checkbox-row input[type="checkbox"] {
+    accent-color: var(--accent-cyan);
+    width: 14px;
+    height: 14px;
+  }
+
+  .checkbox-row label {
+    font-size: 0.72rem !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    color: var(--text) !important;
+    margin-bottom: 0 !important;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Quantum <span>Momentum</span> Explorer</h1>
+  <p class="subtitle">Position Space · Momentum Space · Fourier Duality</p>
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="gaussian">Gaussian Packet</button>
+    <button class="tab-btn" data-tab="planewave">Plane Waves</button>
+    <button class="tab-btn" data-tab="box">Particle in a Box</button>
+    <button class="tab-btn" data-tab="superposition">Superposition</button>
+  </nav>
+</header>
+
+<div class="main">
+
+  <!-- ========== TAB 1: GAUSSIAN ========== -->
+  <div class="tab-content active" id="tab-gaussian">
+    <div class="metrics-bar" id="gauss-metrics">
+      <div class="metric"><div class="label">σₓ (pos. width)</div><div class="value cyan" id="m-sigx">1.00</div></div>
+      <div class="metric"><div class="label">σₚ (mom. width)</div><div class="value pink" id="m-sigp">0.50</div></div>
+      <div class="metric"><div class="label">σₓ · σₚ</div><div class="value gold" id="m-product">0.50</div></div>
+      <div class="metric"><div class="label">ℏ/2 (minimum)</div><div class="value purple">0.50</div></div>
+    </div>
+
+    <div class="plot-row">
+      <div class="plot-card position">
+        <div class="plot-label pos-label"><span class="dot"></span> Position Space — |ψ(x)|²</div>
+        <canvas id="gauss-pos" width="500" height="220"></canvas>
+      </div>
+      <div class="plot-card momentum">
+        <div class="plot-label mom-label"><span class="dot"></span> Momentum Space — |ϕ(p)|²</div>
+        <canvas id="gauss-mom" width="500" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="controls-grid">
+        <div class="control-group">
+          <label>Position Width σₓ <span class="val" id="v-sigx">1.00</span></label>
+          <input type="range" id="s-sigx" min="0.2" max="3" step="0.05" value="1.0">
+        </div>
+        <div class="control-group">
+          <label>Central Momentum p₀ <span class="val" id="v-p0">3.00</span></label>
+          <input type="range" id="s-p0" min="-8" max="8" step="0.25" value="3.0">
+        </div>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="setGaussPreset(0.3, 3)">Narrow packet</button>
+        <button class="preset-btn" onclick="setGaussPreset(2.0, 3)">Wide packet</button>
+        <button class="preset-btn" onclick="setGaussPreset(1.0, 0)">Zero momentum</button>
+        <button class="preset-btn" onclick="setGaussPreset(1.0, 8)">High momentum</button>
+        <button class="preset-btn" onclick="setGaussPreset(0.2, 0)">Min. uncertainty</button>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>What you're seeing:</strong> The left plot is the probability distribution in position space — where you'd find the particle. The right plot is the same state in momentum space — what momenta are present. Notice: narrowing one <em>always</em> widens the other. A Gaussian wave packet saturates the uncertainty bound <span class="eq">σₓ σₚ = ℏ/2</span>, making it the minimum-uncertainty state. The internal oscillations you see in the position-space wavefunction (the wiggles inside the envelope) <em>are</em> the momentum — their spatial frequency is <span class="eq">k = p₀/ℏ</span>.
+    </div>
+  </div>
+
+  <!-- ========== TAB 2: PLANE WAVES ========== -->
+  <div class="tab-content" id="tab-planewave">
+    <div class="full-plot">
+      <div class="plot-label" style="color: var(--accent-blue)"><span class="dot" style="background: var(--accent-blue)"></span> Plane Wave — ψ(x) = e^{ipx/ℏ}</div>
+      <canvas id="pw-canvas" class="tall" width="1000" height="260"></canvas>
+    </div>
+
+    <div class="controls-panel">
+      <div class="controls-grid">
+        <div class="control-group">
+          <label>Momentum p <span class="val" id="v-pwp">2.00</span></label>
+          <input type="range" id="s-pwp" min="0.5" max="10" step="0.25" value="2.0">
+        </div>
+        <div class="control-group">
+          <label>Show component <span class="val" id="v-pwshow">Real + Imag</span></label>
+          <input type="range" id="s-pwshow" min="0" max="2" step="1" value="2">
+        </div>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="setPWPreset(1)">Low momentum</button>
+        <button class="preset-btn" onclick="setPWPreset(4)">Medium momentum</button>
+        <button class="preset-btn" onclick="setPWPreset(8)">High momentum</button>
+      </div>
+    </div>
+
+    <div class="plot-row">
+      <div class="plot-card momentum">
+        <div class="plot-label mom-label"><span class="dot"></span> Momentum Space — |ϕ(p)|²</div>
+        <canvas id="pw-mom" width="500" height="220"></canvas>
+      </div>
+      <div class="plot-card" style="display:flex; align-items:center; justify-content:center;">
+        <div style="text-align:center; padding: 1rem;">
+          <div style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text-bright); margin-bottom: 0.5rem;">λ = 2πℏ/p</div>
+          <div style="font-size: 2rem; font-weight: 600; color: var(--accent-blue);" id="pw-wavelength">3.14</div>
+          <div style="font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; margin-top: 0.3rem;">DE BROGLIE WAVELENGTH</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>A plane wave has definite momentum.</strong> Its momentum-space representation is a perfect delta function at <span class="eq">p = ℏk</span>. Higher momentum → more rapid spatial oscillation → shorter de Broglie wavelength. Notice the real (cyan) and imaginary (pink) parts — the wave spirals in the complex plane. The probability |ψ|² is completely flat — the particle could be <em>anywhere</em>. Definite momentum means completely undefined position.
+    </div>
+  </div>
+
+  <!-- ========== TAB 3: PARTICLE IN BOX ========== -->
+  <div class="tab-content" id="tab-box">
+    <div class="metrics-bar" id="box-metrics">
+      <div class="metric"><div class="label">Quantum Number n</div><div class="value cyan" id="m-boxn">1</div></div>
+      <div class="metric"><div class="label">Energy Eₙ (units of E₁)</div><div class="value pink" id="m-boxe">1</div></div>
+      <div class="metric"><div class="label">⟨p⟩</div><div class="value gold" id="m-boxpavg">0</div></div>
+      <div class="metric"><div class="label">Δp (momentum spread)</div><div class="value purple" id="m-boxdp">—</div></div>
+    </div>
+
+    <div class="plot-row">
+      <div class="plot-card position">
+        <div class="plot-label pos-label"><span class="dot"></span> Position Space — ψₙ(x) & |ψₙ(x)|²</div>
+        <canvas id="box-pos" width="500" height="220"></canvas>
+      </div>
+      <div class="plot-card momentum">
+        <div class="plot-label mom-label"><span class="dot"></span> Momentum Space — |ϕₙ(p)|²</div>
+        <canvas id="box-mom" width="500" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="controls-grid">
+        <div class="control-group">
+          <label>Quantum Number n <span class="val" id="v-boxn">1</span></label>
+          <input type="range" id="s-boxn" min="1" max="8" step="1" value="1">
+        </div>
+        <div class="control-group">
+          <label>Box Width L <span class="val" id="v-boxL">4.00</span></label>
+          <input type="range" id="s-boxL" min="1" max="8" step="0.25" value="4.0">
+        </div>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="setBoxPreset(1,4)">Ground state (n=1)</button>
+        <button class="preset-btn" onclick="setBoxPreset(2,4)">First excited (n=2)</button>
+        <button class="preset-btn" onclick="setBoxPreset(5,4)">High n (n=5)</button>
+        <button class="preset-btn" onclick="setBoxPreset(1,1.5)">Tight box</button>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Why the ground state can't have zero momentum:</strong> For a particle in a box, the wavefunction must be zero at the walls. A zero-momentum state would be completely flat — it can't satisfy the boundary conditions. So the wavefunction <em>must</em> curve, and that curvature <em>is</em> momentum. Higher n means more wiggles → higher spatial frequency → more momentum. Notice the momentum distribution is always symmetric around zero — ⟨p⟩ = 0, meaning the particle is equally likely to be "moving" left as right. The spread Δp grows with n and shrinks with L.
+    </div>
+  </div>
+
+  <!-- ========== TAB 4: SUPERPOSITION ========== -->
+  <div class="tab-content" id="tab-superposition">
+    <div class="metrics-bar" id="super-metrics">
+      <div class="metric"><div class="label">⟨x⟩</div><div class="value cyan" id="m-sx">—</div></div>
+      <div class="metric"><div class="label">⟨p⟩</div><div class="value pink" id="m-sp">—</div></div>
+      <div class="metric"><div class="label">Δx</div><div class="value gold" id="m-sdx">—</div></div>
+      <div class="metric"><div class="label">Δp</div><div class="value purple" id="m-sdp">—</div></div>
+    </div>
+
+    <div class="plot-row">
+      <div class="plot-card position">
+        <div class="plot-label pos-label"><span class="dot"></span> Position Space — |ψ(x,t)|²</div>
+        <canvas id="super-pos" width="500" height="220"></canvas>
+      </div>
+      <div class="plot-card momentum">
+        <div class="plot-label mom-label"><span class="dot"></span> Momentum Space — |ϕ(p,t)|²</div>
+        <canvas id="super-mom" width="500" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <div class="controls-grid" style="grid-template-columns: 1fr;">
+        <div>
+          <label style="font-size:0.68rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.5rem; display:block;">
+            Superposition Components (particle in box, L=4)
+          </label>
+          <div class="super-controls">
+            <div class="control-group">
+              <label>c₁ <span class="val" id="v-c1">0.70</span></label>
+              <input type="range" id="s-c1" min="0" max="1" step="0.05" value="0.7">
+            </div>
+            <div class="control-group">
+              <label>c₂ <span class="val" id="v-c2">0.70</span></label>
+              <input type="range" id="s-c2" min="0" max="1" step="0.05" value="0.7">
+            </div>
+            <div class="control-group">
+              <label>c₃ <span class="val" id="v-c3">0.00</span></label>
+              <input type="range" id="s-c3" min="0" max="1" step="0.05" value="0.0">
+            </div>
+            <div class="control-group">
+              <label>c₄ <span class="val" id="v-c4">0.00</span></label>
+              <input type="range" id="s-c4" min="0" max="1" step="0.05" value="0.0">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="setSuperPreset([1,0,0,0])">Pure n=1</button>
+        <button class="preset-btn" onclick="setSuperPreset([0.7,0.7,0,0])">n=1 + n=2</button>
+        <button class="preset-btn" onclick="setSuperPreset([0.7,0,0.7,0])">n=1 + n=3</button>
+        <button class="preset-btn" onclick="setSuperPreset([0.5,0.5,0.5,0.5])">Equal mix</button>
+        <button class="preset-btn" onclick="setSuperPreset([0,0,0,1])">Pure n=4</button>
+      </div>
+      <div class="checkbox-row" style="margin-top: 0.8rem;">
+        <input type="checkbox" id="cb-animate" checked>
+        <label for="cb-animate">Animate time evolution</label>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Superposition = time evolution.</strong> Unlike a single eigenstate (which is stationary), a superposition of energy eigenstates evolves in time — the probability cloud "sloshes" back and forth. This is because different energy components accumulate phase at different rates: <span class="eq">e^{-iEₙt/ℏ}</span>. Watch how <em>both</em> the position and momentum distributions change together. For a pure eigenstate, everything is frozen — the distributions are time-independent.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== GLOBALS =====
+const hbar = 1; // natural units
+let activeTab = 'gaussian';
+let superTime = 0;
+let animFrame;
+
+// ===== UTILITIES =====
+function getCtx(id) {
+  const c = document.getElementById(id);
+  c.width = c.clientWidth * 2;
+  c.height = c.clientHeight * 2;
+  const ctx = c.getContext('2d');
+  ctx.scale(2, 2);
+  return { ctx, w: c.clientWidth, h: c.clientHeight };
+}
+
+function drawAxes(ctx, w, h, xLabel, yLabel, color) {
+  const pad = { l: 40, r: 15, t: 15, b: 28 };
+  ctx.strokeStyle = '#1a2040';
+  ctx.lineWidth = 1;
+
+  // Grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (h - pad.t - pad.b) * i / 4;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+  }
+  for (let i = 0; i <= 6; i++) {
+    const x = pad.l + (w - pad.l - pad.r) * i / 6;
+    ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, h - pad.b); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#2a3060';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l, h - pad.b); ctx.lineTo(w - pad.r, h - pad.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, h - pad.b); ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#6b7399';
+  ctx.font = '10px "IBM Plex Mono"';
+  ctx.textAlign = 'center';
+  ctx.fillText(xLabel, (pad.l + w - pad.r) / 2, h - 4);
+  ctx.save();
+  ctx.translate(10, (pad.t + h - pad.b) / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText(yLabel, 0, 0);
+  ctx.restore();
+
+  return pad;
+}
+
+function plotLine(ctx, w, h, pad, xArr, yArr, color, lineWidth = 2) {
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const xMin = xArr[0], xMax = xArr[xArr.length - 1];
+  let yMax = 0;
+  for (let i = 0; i < yArr.length; i++) if (Math.abs(yArr[i]) > yMax) yMax = Math.abs(yArr[i]);
+  if (yMax === 0) yMax = 1;
+  yMax *= 1.15;
+
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  for (let i = 0; i < xArr.length; i++) {
+    const px = pad.l + (xArr[i] - xMin) / (xMax - xMin) * plotW;
+    const py = pad.t + plotH - (yArr[i] / yMax) * plotH;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  return { yMax };
+}
+
+function plotFilled(ctx, w, h, pad, xArr, yArr, color, alpha = 0.15) {
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const xMin = xArr[0], xMax = xArr[xArr.length - 1];
+  let yMax = 0;
+  for (let i = 0; i < yArr.length; i++) if (yArr[i] > yMax) yMax = yArr[i];
+  if (yMax === 0) yMax = 1;
+  yMax *= 1.15;
+
+  ctx.beginPath();
+  const baseline = pad.t + plotH;
+  for (let i = 0; i < xArr.length; i++) {
+    const px = pad.l + (xArr[i] - xMin) / (xMax - xMin) * plotW;
+    const py = pad.t + plotH - (yArr[i] / yMax) * plotH;
+    if (i === 0) ctx.moveTo(px, baseline);
+    ctx.lineTo(px, py);
+  }
+  ctx.lineTo(pad.l + plotW, baseline);
+  ctx.closePath();
+  ctx.fillStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < xArr.length; i++) {
+    const px = pad.l + (xArr[i] - xMin) / (xMax - xMin) * plotW;
+    const py = pad.t + plotH - (yArr[i] / yMax) * plotH;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  return { yMax };
+}
+
+function plotFilledSym(ctx, w, h, pad, xArr, yArr, color, yMax, alpha = 0.15) {
+  // For wavefunctions that go negative — centered baseline
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const xMin = xArr[0], xMax = xArr[xArr.length - 1];
+  const midY = pad.t + plotH / 2;
+
+  ctx.beginPath();
+  for (let i = 0; i < xArr.length; i++) {
+    const px = pad.l + (xArr[i] - xMin) / (xMax - xMin) * plotW;
+    const py = midY - (yArr[i] / yMax) * (plotH / 2);
+    if (i === 0) { ctx.moveTo(px, midY); }
+    ctx.lineTo(px, py);
+  }
+  ctx.lineTo(pad.l + (xArr[xArr.length-1] - xMin) / (xMax - xMin) * plotW, midY);
+  ctx.closePath();
+  ctx.fillStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < xArr.length; i++) {
+    const px = pad.l + (xArr[i] - xMin) / (xMax - xMin) * plotW;
+    const py = midY - (yArr[i] / yMax) * (plotH / 2);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // zero line
+  ctx.strokeStyle = '#2a3060';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(pad.l, midY); ctx.lineTo(pad.l + plotW, midY); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function addTickLabels(ctx, w, h, pad, xMin, xMax, yMax, nTicks = 5) {
+  const plotW = w - pad.l - pad.r;
+  ctx.fillStyle = '#4a5280';
+  ctx.font = '9px "IBM Plex Mono"';
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= nTicks; i++) {
+    const val = xMin + (xMax - xMin) * i / nTicks;
+    const px = pad.l + plotW * i / nTicks;
+    ctx.fillText(val.toFixed(1), px, h - pad.b + 14);
+  }
+}
+
+// ===== GAUSSIAN TAB =====
+function drawGaussian() {
+  const sigX = parseFloat(document.getElementById('s-sigx').value);
+  const p0 = parseFloat(document.getElementById('s-p0').value);
+  const sigP = hbar / (2 * sigX);
+
+  document.getElementById('v-sigx').textContent = sigX.toFixed(2);
+  document.getElementById('v-p0').textContent = p0.toFixed(2);
+  document.getElementById('m-sigx').textContent = sigX.toFixed(2);
+  document.getElementById('m-sigp').textContent = sigP.toFixed(2);
+  document.getElementById('m-product').textContent = (sigX * sigP).toFixed(2);
+
+  // Position space
+  const N = 400;
+  const xRange = Math.max(4 * sigX, 6);
+  const xArr = [], psiSq = [], psiReal = [];
+  for (let i = 0; i < N; i++) {
+    const x = -xRange + 2 * xRange * i / (N - 1);
+    xArr.push(x);
+    const env = Math.exp(-x * x / (4 * sigX * sigX));
+    psiSq.push(env * env / (sigX * Math.sqrt(2 * Math.PI)));
+    psiReal.push(env * Math.cos(p0 * x / hbar));
+  }
+
+  let { ctx, w, h } = getCtx('gauss-pos');
+  ctx.clearRect(0, 0, w, h);
+  let pad = drawAxes(ctx, w, h, 'x', '|ψ|²', 'cyan');
+  plotFilled(ctx, w, h, pad, xArr, psiSq, 'rgb(78, 205, 196)');
+  // Overlay Re(ψ) faintly
+  let yMaxR = 0;
+  for (const v of psiReal) if (Math.abs(v) > yMaxR) yMaxR = Math.abs(v);
+  yMaxR *= 1.15;
+  plotFilledSym(ctx, w, h, pad, xArr, psiReal.map(v => v * 0.6), 'rgb(78, 205, 196)', yMaxR * 1.5, 0.05);
+  addTickLabels(ctx, w, h, pad, -xRange, xRange, 0);
+
+  // Momentum space
+  const pRange = Math.max(4 * sigP + Math.abs(p0), 8);
+  const pArr = [], phiSq = [];
+  for (let i = 0; i < N; i++) {
+    const p = -pRange + 2 * pRange * i / (N - 1);
+    pArr.push(p);
+    const dp = p - p0;
+    phiSq.push(Math.exp(-dp * dp / (2 * sigP * sigP)) / (sigP * Math.sqrt(2 * Math.PI)));
+  }
+
+  ({ ctx, w, h } = getCtx('gauss-mom'));
+  ctx.clearRect(0, 0, w, h);
+  pad = drawAxes(ctx, w, h, 'p', '|ϕ|²', 'pink');
+  plotFilled(ctx, w, h, pad, pArr, phiSq, 'rgb(255, 107, 157)');
+  addTickLabels(ctx, w, h, pad, -pRange, pRange, 0);
+}
+
+function setGaussPreset(sig, p0) {
+  document.getElementById('s-sigx').value = sig;
+  document.getElementById('s-p0').value = p0;
+  drawGaussian();
+}
+
+// ===== PLANE WAVE TAB =====
+function drawPlaneWave() {
+  const p = parseFloat(document.getElementById('s-pwp').value);
+  const showMode = parseInt(document.getElementById('s-pwshow').value);
+  document.getElementById('v-pwp').textContent = p.toFixed(2);
+  document.getElementById('v-pwshow').textContent = ['Real only', 'Imag only', 'Real + Imag'][showMode];
+
+  const k = p / hbar;
+  const lambda = 2 * Math.PI / k;
+  document.getElementById('pw-wavelength').textContent = lambda.toFixed(2);
+
+  const N = 600;
+  const xRange = 12;
+  const xArr = [], reArr = [], imArr = [];
+  for (let i = 0; i < N; i++) {
+    const x = -xRange + 2 * xRange * i / (N - 1);
+    xArr.push(x);
+    reArr.push(Math.cos(k * x));
+    imArr.push(Math.sin(k * x));
+  }
+
+  let { ctx, w, h } = getCtx('pw-canvas');
+  ctx.clearRect(0, 0, w, h);
+  let pad = drawAxes(ctx, w, h, 'x', 'ψ(x)', 'blue');
+
+  if (showMode === 0 || showMode === 2) {
+    plotFilledSym(ctx, w, h, pad, xArr, reArr, 'rgb(78, 205, 196)', 1.3, 0.08);
+  }
+  if (showMode === 1 || showMode === 2) {
+    plotFilledSym(ctx, w, h, pad, xArr, imArr, 'rgb(255, 107, 157)', 1.3, 0.08);
+  }
+  addTickLabels(ctx, w, h, pad, -xRange, xRange, 0);
+
+  // Draw wavelength annotation
+  if (lambda < 2 * xRange) {
+    const plotW = w - pad.l - pad.r;
+    const center = pad.l + plotW / 2;
+    const pxPerUnit = plotW / (2 * xRange);
+    const lambdaPx = lambda * pxPerUnit;
+    const annY = pad.t + 14;
+    ctx.strokeStyle = 'rgba(255, 217, 61, 0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(center - lambdaPx / 2, annY);
+    ctx.lineTo(center + lambdaPx / 2, annY);
+    ctx.stroke();
+    // arrows
+    ctx.beginPath();
+    ctx.moveTo(center - lambdaPx / 2 + 5, annY - 4);
+    ctx.lineTo(center - lambdaPx / 2, annY);
+    ctx.lineTo(center - lambdaPx / 2 + 5, annY + 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(center + lambdaPx / 2 - 5, annY - 4);
+    ctx.lineTo(center + lambdaPx / 2, annY);
+    ctx.lineTo(center + lambdaPx / 2 - 5, annY + 4);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 217, 61, 0.9)';
+    ctx.font = '10px "IBM Plex Mono"';
+    ctx.textAlign = 'center';
+    ctx.fillText('λ', center, annY - 6);
+  }
+
+  // Momentum space: delta function at p
+  ({ ctx, w: w, h: h } = getCtx('pw-mom'));
+  ctx.clearRect(0, 0, w, h);
+  pad = drawAxes(ctx, w, h, 'p', '|ϕ(p)|²', 'pink');
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const pDispRange = 12;
+  const ppx = pad.l + (p + pDispRange) / (2 * pDispRange) * plotW;
+  // Draw spike
+  ctx.strokeStyle = 'rgb(255, 107, 157)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(ppx, pad.t + plotH);
+  ctx.lineTo(ppx, pad.t + 10);
+  ctx.stroke();
+  // Arrow head
+  ctx.beginPath();
+  ctx.moveTo(ppx - 5, pad.t + 18);
+  ctx.lineTo(ppx, pad.t + 8);
+  ctx.lineTo(ppx + 5, pad.t + 18);
+  ctx.fillStyle = 'rgb(255, 107, 157)';
+  ctx.fill();
+  // Label
+  ctx.fillStyle = 'rgb(255, 107, 157)';
+  ctx.font = '11px "IBM Plex Mono"';
+  ctx.textAlign = 'center';
+  ctx.fillText('δ(p − ' + p.toFixed(1) + ')', ppx, pad.t + plotH - 8);
+  addTickLabels(ctx, w, h, pad, -pDispRange, pDispRange, 0);
+}
+
+function setPWPreset(p) {
+  document.getElementById('s-pwp').value = p;
+  drawPlaneWave();
+}
+
+// ===== PARTICLE IN BOX TAB =====
+function drawBox() {
+  const n = parseInt(document.getElementById('s-boxn').value);
+  const L = parseFloat(document.getElementById('s-boxL').value);
+  document.getElementById('v-boxn').textContent = n;
+  document.getElementById('v-boxL').textContent = L.toFixed(2);
+  document.getElementById('m-boxn').textContent = n;
+  document.getElementById('m-boxe').textContent = n * n;
+  document.getElementById('m-boxpavg').textContent = '0';
+
+  // Position space
+  const N = 400;
+  const margin = L * 0.3;
+  const xArr = [], psiArr = [], psiSqArr = [];
+  for (let i = 0; i < N; i++) {
+    const x = -margin + (L + 2 * margin) * i / (N - 1);
+    xArr.push(x);
+    if (x >= 0 && x <= L) {
+      const val = Math.sqrt(2 / L) * Math.sin(n * Math.PI * x / L);
+      psiArr.push(val);
+      psiSqArr.push(val * val);
+    } else {
+      psiArr.push(0);
+      psiSqArr.push(0);
+    }
+  }
+
+  let { ctx, w, h } = getCtx('box-pos');
+  ctx.clearRect(0, 0, w, h);
+  let pad = drawAxes(ctx, w, h, 'x', 'ψ, |ψ|²', 'cyan');
+
+  // |ψ|² filled
+  plotFilled(ctx, w, h, pad, xArr, psiSqArr, 'rgb(78, 205, 196)', 0.2);
+  // ψ line
+  let yMaxPsi = 0;
+  for (const v of psiArr) if (Math.abs(v) > yMaxPsi) yMaxPsi = Math.abs(v);
+  yMaxPsi *= 1.15;
+  plotFilledSym(ctx, w, h, pad, xArr, psiArr, 'rgb(78, 205, 196)', yMaxPsi, 0.05);
+
+  // Wall indicators
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const xMin = -margin, xMax = L + margin;
+  const wallL = pad.l + (0 - xMin) / (xMax - xMin) * plotW;
+  const wallR = pad.l + (L - xMin) / (xMax - xMin) * plotW;
+  ctx.strokeStyle = 'rgba(255, 217, 61, 0.5)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(wallL, pad.t); ctx.lineTo(wallL, h - pad.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(wallR, pad.t); ctx.lineTo(wallR, h - pad.b); ctx.stroke();
+  ctx.setLineDash([]);
+  addTickLabels(ctx, w, h, pad, xMin, xMax, 0);
+
+  // Momentum space via Fourier transform of box eigenstate
+  const pMax = (n + 3) * Math.PI / L * 1.5;
+  const pArr = [], phiSqArr = [];
+  for (let i = 0; i < N; i++) {
+    const p = -pMax + 2 * pMax * i / (N - 1);
+    pArr.push(p);
+    // Analytic FT of sin(nπx/L) on [0,L]
+    const k = n * Math.PI / L;
+    const denom1 = p / hbar - k;
+    const denom2 = p / hbar + k;
+    let re = 0, im = 0;
+    // ϕ(p) = sqrt(2/L) * (1/sqrt(2πℏ)) * integral of sin(kx)*e^{-ipx/ℏ} dx from 0 to L
+    // Use numerical integration for robustness
+    const Nint = 800;
+    const dx = L / Nint;
+    for (let j = 0; j <= Nint; j++) {
+      const x = j * dx;
+      const psi = Math.sqrt(2 / L) * Math.sin(k * x);
+      re += psi * Math.cos(-p * x / hbar) * dx;
+      im += psi * Math.sin(-p * x / hbar) * dx;
+    }
+    re /= Math.sqrt(2 * Math.PI * hbar);
+    im /= Math.sqrt(2 * Math.PI * hbar);
+    phiSqArr.push(re * re + im * im);
+  }
+
+  // Compute momentum spread
+  let pAvg = 0, p2Avg = 0, norm = 0;
+  const dp = 2 * pMax / (N - 1);
+  for (let i = 0; i < N; i++) {
+    pAvg += pArr[i] * phiSqArr[i] * dp;
+    p2Avg += pArr[i] * pArr[i] * phiSqArr[i] * dp;
+    norm += phiSqArr[i] * dp;
+  }
+  pAvg /= norm; p2Avg /= norm;
+  const deltaP = Math.sqrt(p2Avg - pAvg * pAvg);
+  document.getElementById('m-boxdp').textContent = deltaP.toFixed(2);
+
+  ({ ctx, w, h } = getCtx('box-mom'));
+  ctx.clearRect(0, 0, w, h);
+  pad = drawAxes(ctx, w, h, 'p', '|ϕ(p)|²', 'pink');
+  plotFilled(ctx, w, h, pad, pArr, phiSqArr, 'rgb(255, 107, 157)');
+  addTickLabels(ctx, w, h, pad, -pMax, pMax, 0);
+}
+
+function setBoxPreset(n, L) {
+  document.getElementById('s-boxn').value = n;
+  document.getElementById('s-boxL').value = L;
+  drawBox();
+}
+
+// ===== SUPERPOSITION TAB =====
+function drawSuperposition(t) {
+  const L = 4;
+  const cs = [
+    parseFloat(document.getElementById('s-c1').value),
+    parseFloat(document.getElementById('s-c2').value),
+    parseFloat(document.getElementById('s-c3').value),
+    parseFloat(document.getElementById('s-c4').value),
+  ];
+  document.getElementById('v-c1').textContent = cs[0].toFixed(2);
+  document.getElementById('v-c2').textContent = cs[1].toFixed(2);
+  document.getElementById('v-c3').textContent = cs[2].toFixed(2);
+  document.getElementById('v-c4').textContent = cs[3].toFixed(2);
+
+  // Normalize
+  let normSq = 0;
+  for (const c of cs) normSq += c * c;
+  if (normSq === 0) normSq = 1;
+  const norm = Math.sqrt(normSq);
+  const cn = cs.map(c => c / norm);
+
+  // Energy eigenvalues (E_n = n² in units where E₁ = 1)
+  const En = [1, 4, 9, 16];
+
+  const N = 500;
+  const margin = L * 0.2;
+  const xArr = [], psiSqArr = [];
+  const psiRe = new Array(N).fill(0);
+  const psiIm = new Array(N).fill(0);
+
+  for (let i = 0; i < N; i++) {
+    const x = -margin + (L + 2 * margin) * i / (N - 1);
+    xArr.push(x);
+    let re = 0, im = 0;
+    for (let n = 0; n < 4; n++) {
+      if (cn[n] === 0) continue;
+      const k = (n + 1) * Math.PI / L;
+      const spatial = (x >= 0 && x <= L) ? Math.sqrt(2 / L) * Math.sin(k * x) : 0;
+      const phase = -En[n] * t;
+      re += cn[n] * spatial * Math.cos(phase);
+      im += cn[n] * spatial * Math.sin(phase);
+    }
+    psiRe[i] = re;
+    psiIm[i] = im;
+    psiSqArr.push(re * re + im * im);
+  }
+
+  // Position space
+  let { ctx, w, h } = getCtx('super-pos');
+  ctx.clearRect(0, 0, w, h);
+  let pad = drawAxes(ctx, w, h, 'x', '|ψ|²', 'cyan');
+  plotFilled(ctx, w, h, pad, xArr, psiSqArr, 'rgb(78, 205, 196)');
+
+  // Walls
+  const plotW = w - pad.l - pad.r;
+  const xMin = -margin, xMax = L + margin;
+  const wallLx = pad.l + (0 - xMin) / (xMax - xMin) * plotW;
+  const wallRx = pad.l + (L - xMin) / (xMax - xMin) * plotW;
+  ctx.strokeStyle = 'rgba(255, 217, 61, 0.5)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(wallLx, pad.t); ctx.lineTo(wallLx, h - pad.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(wallRx, pad.t); ctx.lineTo(wallRx, h - pad.b); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Momentum space via numerical FT
+  const pMaxS = 15;
+  const Np = 400;
+  const pArr = [], phiSqArr = [];
+  for (let i = 0; i < Np; i++) {
+    const p = -pMaxS + 2 * pMaxS * i / (Np - 1);
+    pArr.push(p);
+    let fre = 0, fim = 0;
+    const dx = (L + 2 * margin) / (N - 1);
+    for (let j = 0; j < N; j++) {
+      fre += (psiRe[j] * Math.cos(-p * xArr[j] / hbar) - psiIm[j] * Math.sin(-p * xArr[j] / hbar)) * dx;
+      fim += (psiRe[j] * Math.sin(-p * xArr[j] / hbar) + psiIm[j] * Math.cos(-p * xArr[j] / hbar)) * dx;
+    }
+    fre /= Math.sqrt(2 * Math.PI * hbar);
+    fim /= Math.sqrt(2 * Math.PI * hbar);
+    phiSqArr.push(fre * fre + fim * fim);
+  }
+
+  ({ ctx, w, h } = getCtx('super-mom'));
+  ctx.clearRect(0, 0, w, h);
+  pad = drawAxes(ctx, w, h, 'p', '|ϕ|²', 'pink');
+  plotFilled(ctx, w, h, pad, pArr, phiSqArr, 'rgb(255, 107, 157)');
+
+  // Compute metrics
+  const dxInt = (L + 2 * margin) / (N - 1);
+  let xAvg = 0, x2Avg = 0, normX = 0;
+  for (let i = 0; i < N; i++) {
+    xAvg += xArr[i] * psiSqArr[i] * dxInt;
+    x2Avg += xArr[i] * xArr[i] * psiSqArr[i] * dxInt;
+    normX += psiSqArr[i] * dxInt;
+  }
+  xAvg /= normX; x2Avg /= normX;
+  const deltaX = Math.sqrt(Math.max(0, x2Avg - xAvg * xAvg));
+
+  const dpInt = 2 * pMaxS / (Np - 1);
+  let pAvg = 0, p2Avg = 0, normP = 0;
+  for (let i = 0; i < Np; i++) {
+    pAvg += pArr[i] * phiSqArr[i] * dpInt;
+    p2Avg += pArr[i] * pArr[i] * phiSqArr[i] * dpInt;
+    normP += phiSqArr[i] * dpInt;
+  }
+  pAvg /= normP; p2Avg /= normP;
+  const deltaP = Math.sqrt(Math.max(0, p2Avg - pAvg * pAvg));
+
+  document.getElementById('m-sx').textContent = xAvg.toFixed(2);
+  document.getElementById('m-sp').textContent = pAvg.toFixed(2);
+  document.getElementById('m-sdx').textContent = deltaX.toFixed(2);
+  document.getElementById('m-sdp').textContent = deltaP.toFixed(2);
+}
+
+function setSuperPreset(vals) {
+  document.getElementById('s-c1').value = vals[0];
+  document.getElementById('s-c2').value = vals[1];
+  document.getElementById('s-c3').value = vals[2];
+  document.getElementById('s-c4').value = vals[3];
+  superTime = 0;
+}
+
+// ===== ANIMATION LOOP =====
+function animate() {
+  if (activeTab === 'gaussian') drawGaussian();
+  else if (activeTab === 'planewave') drawPlaneWave();
+  else if (activeTab === 'box') drawBox();
+  else if (activeTab === 'superposition') {
+    if (document.getElementById('cb-animate').checked) {
+      superTime += 0.03;
+    }
+    drawSuperposition(superTime);
+  }
+  animFrame = requestAnimationFrame(animate);
+}
+
+// ===== EVENT LISTENERS =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    activeTab = btn.dataset.tab;
+    document.getElementById('tab-' + activeTab).classList.add('active');
+    superTime = 0;
+  });
+});
+
+// Slider listeners
+['s-sigx', 's-p0'].forEach(id => document.getElementById(id).addEventListener('input', drawGaussian));
+['s-pwp', 's-pwshow'].forEach(id => document.getElementById(id).addEventListener('input', drawPlaneWave));
+['s-boxn', 's-boxL'].forEach(id => document.getElementById(id).addEventListener('input', drawBox));
+['s-c1', 's-c2', 's-c3', 's-c4'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { superTime = 0; });
+});
+
+// Resize handling
+window.addEventListener('resize', () => {
+  if (activeTab === 'gaussian') drawGaussian();
+  else if (activeTab === 'planewave') drawPlaneWave();
+  else if (activeTab === 'box') drawBox();
+  else if (activeTab === 'superposition') drawSuperposition(superTime);
+});
+
+// Start
+animate();
+</script>
+</body>
+</html>

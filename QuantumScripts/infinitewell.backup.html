@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinite Square Well – Quantum Superposition</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep: #0a0a1a;
+    --bg-panel: #10102a;
+    --bg-card: #161640;
+    --border: #2a2a5a;
+    --text: #c8c8e0;
+    --text-dim: #6a6a90;
+    --text-bright: #e8e8ff;
+    --accent-cyan: #00e5ff;
+    --accent-teal: #00bfa5;
+    --accent-yellow: #ffd740;
+    --accent-coral: #ff6b6b;
+    --accent-lime: #b2ff59;
+    --accent-orange: #ffab40;
+    --accent-purple: #b388ff;
+    --accent-pink: #ff80ab;
+    --slider-track: #1e1e4a;
+    --slider-thumb: #00e5ff;
+  }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; padding: 14px 18px; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 14px 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .header .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* 3-column layout: controls | main canvas | supplementary */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 255px 1fr 245px;
+    gap: 14px;
+    align-items: start;
+  }
+
+  @media (max-width: 1100px) {
+    .main-grid { grid-template-columns: 240px 1fr; }
+    .canvas-right { display: none; }
+  }
+  @media (max-width: 680px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Panels */
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+  }
+  .panel-title {
+    font-weight: 600;
+    font-size: 0.79rem;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 11px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .panel-title .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 6px var(--accent-cyan);
+    flex-shrink: 0;
+  }
+
+  /* Level rows – label | stacked amp+phase groups */
+  .level-row {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 6px;
+    align-items: start;
+    margin-bottom: 7px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .level-row.active { border-color: var(--border); }
+  .level-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.76rem;
+    text-align: center;
+    padding-top: 4px;
+  }
+  .level-groups { display: flex; flex-direction: column; gap: 5px; }
+
+  .slider-group { display: flex; flex-direction: column; gap: 2px; }
+  .slider-group > label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .slider-with-input {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .slider-with-input input[type="range"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Number inputs */
+  .num-input {
+    width: 46px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 2px 4px;
+    text-align: right;
+    outline: none;
+    flex-shrink: 0;
+  }
+  .num-input:focus { border-color: var(--accent-cyan); }
+  .num-input::-webkit-outer-spin-button,
+  .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .num-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+  /* Custom sliders */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--slider-track);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--slider-thumb);
+    box-shadow: 0 0 6px rgba(0,229,255,0.4);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--slider-thumb);
+    border: none;
+    box-shadow: 0 0 6px rgba(0,229,255,0.4);
+    cursor: pointer;
+  }
+
+  /* Buttons */
+  .controls-row {
+    display: flex;
+    gap: 7px;
+    margin-top: 9px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--accent-cyan); color: var(--text-bright); }
+  .btn.active {
+    background: rgba(0,229,255,0.12);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,191,165,0.15));
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  /* Global controls */
+  .global-control {
+    margin-top: 11px;
+    padding-top: 11px;
+    border-top: 1px solid var(--border);
+  }
+  .speed-row {
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 8px;
+  }
+  .speed-row label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    min-width: 42px;
+  }
+  .speed-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-bright);
+    min-width: 34px;
+    text-align: right;
+  }
+
+  /* Info readout */
+  .info-readout {
+    margin-top: 11px;
+    padding: 9px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    line-height: 1.75;
+    color: var(--text-dim);
+  }
+  .info-readout .highlight { color: var(--accent-cyan); }
+  .info-readout .yellow { color: var(--accent-yellow); }
+
+  /* Checkbox */
+  .checkbox-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 8px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .checkbox-row input { accent-color: var(--accent-cyan); cursor: pointer; }
+
+  /* Presets */
+  .presets { margin-top: 10px; }
+  .presets .panel-title { margin-bottom: 8px; }
+  .preset-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  /* Canvas columns */
+  .canvas-right { display: flex; flex-direction: column; gap: 13px; }
+
+  .canvas-wrapper {
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .canvas-wrapper.main-wrap {
+    aspect-ratio: 1 / 1;
+  }
+  .canvas-wrapper.main-wrap canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  canvas { display: block; width: 100%; }
+
+  /* Supplementary panel titles (inside canvas-wrapper) */
+  .supp-title {
+    font-weight: 600;
+    font-size: 0.73rem;
+    color: var(--text-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .supp-title .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 5px var(--accent-cyan);
+  }
+
+  /* Educational note */
+  .edu-note {
+    margin-top: 10px;
+    padding: 9px 11px;
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.1);
+    border-radius: 8px;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .edu-note strong { color: var(--accent-teal); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Infinite Square Well</h1>
+    <div class="subtitle">ψ(x,t) = Σ cₙ sin(nπx) exp(−in²π²t) &nbsp;·&nbsp; ℏ=1, 2m=1, a=1</div>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT: Controls -->
+    <div class="controls-col">
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span>Energy Eigenstates</div>
+        <div id="levelControls"></div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="showComponents"> Show component |ψₙ|²
+        </label>
+
+        <div class="global-control">
+          <div class="speed-row">
+            <label>Speed</label>
+            <input type="range" id="speedSlider" min="0.05" max="5" step="0.05" value="1">
+            <span class="val" id="speedVal">1.00×</span>
+          </div>
+          <div class="controls-row">
+            <button class="btn btn-primary" id="playPauseBtn">⏸ Pause</button>
+            <button class="btn" id="resetBtn">↺ Reset t=0</button>
+          </div>
+        </div>
+
+        <div class="info-readout" id="infoReadout">
+          <div>t = <span class="highlight" id="timeDisplay">0.0000</span></div>
+          <div>⟨x⟩ = <span class="yellow" id="xExpectDisplay">0.5000</span></div>
+          <div>Active: <span id="activeDisplay">n=1, n=2</span></div>
+          <div>Beat period: <span class="highlight" id="beatDisplay">—</span></div>
+        </div>
+      </div>
+
+      <div class="presets panel" style="margin-top:10px;">
+        <div class="panel-title"><span class="dot"></span>Presets</div>
+        <div class="preset-grid">
+          <button class="btn" onclick="applyPreset('ground')">Ground only</button>
+          <button class="btn" onclick="applyPreset('n12')">n=1+2</button>
+          <button class="btn" onclick="applyPreset('n13')">n=1+3</button>
+          <button class="btn" onclick="applyPreset('gauss')">Gaussian</button>
+          <button class="btn" onclick="applyPreset('all')">All equal</button>
+        </div>
+      </div>
+
+      <div class="edu-note">
+        <strong>Tip:</strong> Each energy eigenstate alone is a <em>stationary state</em> — its probability density doesn't change in time. Turn all but one level to zero to see this. Superpositions create interference that makes |Ψ|² oscillate.
+      </div>
+    </div>
+
+    <!-- CENTER: Main canvas -->
+    <div class="canvas-center">
+      <div class="canvas-wrapper main-wrap">
+        <canvas id="mainCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- RIGHT: Supplementary plots -->
+    <div class="canvas-right">
+      <div class="canvas-wrapper">
+        <div class="supp-title"><span class="dot"></span>⟨x⟩(t) Trajectory</div>
+        <canvas id="trajectoryCanvas" height="195"></canvas>
+      </div>
+      <div class="canvas-wrapper">
+        <div class="supp-title"><span class="dot"></span>Phasor Diagram</div>
+        <canvas id="phasorCanvas" height="218"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== CONSTANTS =====================
+const N_POINTS = 600;
+const MAX_LEVELS = 5;
+const PI = Math.PI;
+const PI2 = PI * PI;
+
+// Slows the physics so beat oscillations are visible at speed 1×.
+// At 1.0×, n=1+2 beat period takes ~2 real seconds to complete.
+const BASE_TIME_SCALE = 0.1;
+
+const LEVEL_COLORS = [
+  '#ff6b6b', // coral  - n=1
+  '#b2ff59', // lime   - n=2
+  '#ffab40', // orange - n=3
+  '#b388ff', // purple - n=4
+  '#ff80ab', // pink   - n=5
+];
+
+// ===================== STATE =====================
+let amplitudes = [0.707, 0.707, 0, 0, 0];
+let phases = [0, 0, 0, 0, 0]; // radians
+let normAmps = [0, 0, 0, 0, 0];
+let t = 0;
+let running = true;
+let speedMultiplier = 1.0;
+let lastTimestamp = null;
+let trajectoryHistory = [];
+let showComponents = false;
+
+// ===================== SPATIAL GRID =====================
+const dx = 1.0 / N_POINTS;
+const xGrid = new Float64Array(N_POINTS);
+for (let i = 0; i < N_POINTS; i++) xGrid[i] = (i + 0.5) * dx;
+
+// ===================== PRECOMPUTE EIGENFUNCTIONS =====================
+const psi = [];
+for (let n = 0; n < MAX_LEVELS; n++) {
+  psi[n] = new Float64Array(N_POINTS);
+  const k = (n + 1) * PI;
+  const norm = Math.sqrt(2);
+  for (let j = 0; j < N_POINTS; j++) psi[n][j] = norm * Math.sin(k * xGrid[j]);
+}
+
+// Energy levels E_n = n² π²
+const E = [];
+for (let n = 1; n <= MAX_LEVELS; n++) E.push(n * n * PI2);
+
+// ===================== NORMALISATION =====================
+function normalise() {
+  let sumSq = 0;
+  for (let n = 0; n < MAX_LEVELS; n++) sumSq += amplitudes[n] * amplitudes[n];
+  if (sumSq < 1e-12) { normAmps.fill(0); return; }
+  const inv = 1.0 / Math.sqrt(sumSq);
+  for (let n = 0; n < MAX_LEVELS; n++) normAmps[n] = amplitudes[n] * inv;
+}
+
+// ===================== COMPUTE PROBABILITY DENSITY =====================
+function computeProbDensity(time) {
+  const prob = new Float64Array(N_POINTS);
+  const active = [];
+  for (let n = 0; n < MAX_LEVELS; n++) {
+    if (normAmps[n] > 1e-6) {
+      const angle = -E[n] * time + phases[n];
+      active.push({ n, re: normAmps[n] * Math.cos(angle), im: normAmps[n] * Math.sin(angle) });
+    }
+  }
+  if (active.length === 0) return prob;
+  for (let j = 0; j < N_POINTS; j++) {
+    let reSum = 0, imSum = 0;
+    for (const a of active) {
+      const p = psi[a.n][j];
+      reSum += a.re * p;
+      imSum += a.im * p;
+    }
+    prob[j] = reSum * reSum + imSum * imSum;
+  }
+  return prob;
+}
+
+// ===================== EXPECTATION VALUE =====================
+function computeExpectation(prob) {
+  let sum = 0;
+  for (let j = 0; j < N_POINTS; j++) sum += xGrid[j] * prob[j];
+  return sum * dx;
+}
+
+// ===================== BEAT PERIOD =====================
+function computeBeatPeriod() {
+  const activeN = [];
+  for (let n = 0; n < MAX_LEVELS; n++) if (normAmps[n] > 1e-4) activeN.push(n + 1);
+  if (activeN.length < 2) return null;
+  let minDE = Infinity;
+  for (let i = 0; i < activeN.length; i++) {
+    for (let j = i + 1; j < activeN.length; j++) {
+      const de = Math.abs(activeN[j] * activeN[j] - activeN[i] * activeN[i]) * PI2;
+      if (de > 0 && de < minDE) minDE = de;
+    }
+  }
+  return minDE < Infinity ? (2 * PI) / minDE : null;
+}
+
+// ===================== BUILD CONTROLS =====================
+const controlsDiv = document.getElementById('levelControls');
+const ampSliders = [], phaseSliders = [], ampNumInputs = [], phaseNumInputs = [];
+
+for (let n = 0; n < MAX_LEVELS; n++) {
+  const row = document.createElement('div');
+  row.className = 'level-row' + (amplitudes[n] > 0.001 ? ' active' : '');
+  row.id = `levelRow${n}`;
+
+  // n= label
+  const label = document.createElement('div');
+  label.className = 'level-label';
+  label.style.color = LEVEL_COLORS[n];
+  label.textContent = `n=${n + 1}`;
+
+  // Container for both slider groups
+  const groups = document.createElement('div');
+  groups.className = 'level-groups';
+
+  // --- Amplitude ---
+  const ampGroup = document.createElement('div');
+  ampGroup.className = 'slider-group';
+  const ampLabel = document.createElement('label');
+  ampLabel.textContent = 'amp';
+  ampGroup.appendChild(ampLabel);
+
+  const ampRow = document.createElement('div');
+  ampRow.className = 'slider-with-input';
+
+  const ampSlider = document.createElement('input');
+  ampSlider.type = 'range'; ampSlider.min = 0; ampSlider.max = 1; ampSlider.step = 0.01;
+  ampSlider.value = amplitudes[n];
+  ampSlider.id = `ampSlider${n}`;
+
+  const ampNum = document.createElement('input');
+  ampNum.type = 'number'; ampNum.min = 0; ampNum.max = 1; ampNum.step = 0.01;
+  ampNum.value = amplitudes[n].toFixed(2);
+  ampNum.id = `ampNum${n}`;
+  ampNum.className = 'num-input';
+
+  ampRow.appendChild(ampSlider);
+  ampRow.appendChild(ampNum);
+  ampGroup.appendChild(ampRow);
+
+  // --- Phase ---
+  const phaseGroup = document.createElement('div');
+  phaseGroup.className = 'slider-group';
+  const phaseLabel = document.createElement('label');
+  phaseLabel.textContent = 'phase (°)';
+  phaseGroup.appendChild(phaseLabel);
+
+  const phaseRow = document.createElement('div');
+  phaseRow.className = 'slider-with-input';
+
+  const phaseSlider = document.createElement('input');
+  phaseSlider.type = 'range'; phaseSlider.min = 0; phaseSlider.max = 360; phaseSlider.step = 1;
+  phaseSlider.value = 0;
+  phaseSlider.id = `phaseSlider${n}`;
+
+  const phaseNum = document.createElement('input');
+  phaseNum.type = 'number'; phaseNum.min = 0; phaseNum.max = 360; phaseNum.step = 1;
+  phaseNum.value = '0';
+  phaseNum.id = `phaseNum${n}`;
+  phaseNum.className = 'num-input';
+
+  phaseRow.appendChild(phaseSlider);
+  phaseRow.appendChild(phaseNum);
+  phaseGroup.appendChild(phaseRow);
+
+  groups.appendChild(ampGroup);
+  groups.appendChild(phaseGroup);
+  row.appendChild(label);
+  row.appendChild(groups);
+  controlsDiv.appendChild(row);
+
+  ampSliders.push(ampSlider);
+  phaseSliders.push(phaseSlider);
+  ampNumInputs.push(ampNum);
+  phaseNumInputs.push(phaseNum);
+
+  // Bidirectional sync – amplitude
+  ampSlider.addEventListener('input', () => {
+    amplitudes[n] = parseFloat(ampSlider.value);
+    ampNum.value = amplitudes[n].toFixed(2);
+    onStateChange();
+  });
+  ampNum.addEventListener('input', () => {
+    let val = parseFloat(ampNum.value);
+    if (isNaN(val)) return;
+    val = Math.max(0, Math.min(1, val));
+    amplitudes[n] = val;
+    ampSlider.value = val;
+    onStateChange();
+  });
+
+  // Bidirectional sync – phase
+  phaseSlider.addEventListener('input', () => {
+    const deg = parseFloat(phaseSlider.value);
+    phases[n] = deg * PI / 180;
+    phaseNum.value = Math.round(deg);
+    onStateChange();
+  });
+  phaseNum.addEventListener('input', () => {
+    let val = parseFloat(phaseNum.value);
+    if (isNaN(val)) return;
+    val = Math.max(0, Math.min(360, val));
+    phases[n] = val * PI / 180;
+    phaseSlider.value = val;
+    onStateChange();
+  });
+}
+
+function onStateChange() {
+  normalise();
+  updateNormDisplay();
+  updateInfoReadout();
+}
+
+function updateNormDisplay() {
+  for (let n = 0; n < MAX_LEVELS; n++) {
+    document.getElementById(`levelRow${n}`).classList.toggle('active', normAmps[n] > 0.001);
+  }
+}
+
+// Speed slider
+const speedSlider = document.getElementById('speedSlider');
+const speedVal = document.getElementById('speedVal');
+speedSlider.addEventListener('input', () => {
+  speedMultiplier = parseFloat(speedSlider.value);
+  speedVal.textContent = speedMultiplier.toFixed(2) + '×';
+});
+
+// Play/Pause
+const playPauseBtn = document.getElementById('playPauseBtn');
+playPauseBtn.addEventListener('click', () => {
+  running = !running;
+  playPauseBtn.textContent = running ? '⏸ Pause' : '▶ Play';
+  playPauseBtn.classList.toggle('active', !running);
+  if (running) lastTimestamp = null;
+});
+
+// Reset
+document.getElementById('resetBtn').addEventListener('click', () => {
+  t = 0;
+  lastTimestamp = null;
+  trajectoryHistory = [];
+  updateInfoReadout();
+});
+
+// Show components
+document.getElementById('showComponents').addEventListener('change', (e) => {
+  showComponents = e.target.checked;
+});
+
+// ===================== INFO READOUT =====================
+function updateInfoReadout() {
+  document.getElementById('timeDisplay').textContent = t.toFixed(4);
+  const activeList = [];
+  for (let n = 0; n < MAX_LEVELS; n++) if (normAmps[n] > 1e-4) activeList.push(`n=${n + 1}`);
+  document.getElementById('activeDisplay').textContent = activeList.length > 0 ? activeList.join(', ') : '—';
+  const bp = computeBeatPeriod();
+  document.getElementById('beatDisplay').textContent = bp ? `T = ${bp.toFixed(4)}` : '—';
+}
+
+// ===================== PRESETS =====================
+function applyPreset(name) {
+  const presets = {
+    ground: [1, 0, 0, 0, 0],
+    n12:    [0.707, 0.707, 0, 0, 0],
+    n13:    [0.707, 0, 0.707, 0, 0],
+    gauss:  [0.6, 0.45, 0.25, 0.12, 0.05],
+    all:    [1, 1, 1, 1, 1],
+  };
+  const p = presets[name] || presets.n12;
+  for (let n = 0; n < MAX_LEVELS; n++) {
+    amplitudes[n] = p[n];
+    phases[n] = 0;
+    ampSliders[n].value = p[n];
+    phaseSliders[n].value = 0;
+    ampNumInputs[n].value = p[n].toFixed(2);
+    phaseNumInputs[n].value = '0';
+  }
+  normalise();
+  updateNormDisplay();
+  t = 0;
+  lastTimestamp = null;
+  trajectoryHistory = [];
+  updateInfoReadout();
+}
+
+// ===================== CANVAS SETUP =====================
+const mainCanvas = document.getElementById('mainCanvas');
+const trajCanvas = document.getElementById('trajectoryCanvas');
+const phasorCanvas = document.getElementById('phasorCanvas');
+const mainCtx = mainCanvas.getContext('2d');
+const trajCtx = trajCanvas.getContext('2d');
+const phasorCtx = phasorCanvas.getContext('2d');
+
+function resizeCanvases() {
+  const dpr = window.devicePixelRatio || 1;
+  [mainCanvas, trajCanvas, phasorCanvas].forEach(c => {
+    const rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  });
+}
+resizeCanvases();
+window.addEventListener('resize', resizeCanvases);
+
+// ===================== DRAWING: MAIN CANVAS =====================
+function drawMainCanvas(prob, xExpect) {
+  const w = mainCanvas.getBoundingClientRect().width;
+  const h = mainCanvas.getBoundingClientRect().height;
+  const ctx = mainCtx;
+  ctx.clearRect(0, 0, w, h);
+
+  const ml = 52, mr = 20, mt = 20, mb = 36;
+  const pw = w - ml - mr;
+  const ph = h - mt - mb;
+
+  ctx.fillStyle = '#0c0c20';
+  ctx.fillRect(0, 0, w, h);
+
+  const yMax = 3.0;
+  function xToScreen(x) { return ml + x * pw; }
+  function yToScreen(y) { return mt + ph - (y / yMax) * ph; }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let y = 0.5; y <= yMax; y += 0.5) {
+    ctx.beginPath(); ctx.moveTo(ml, yToScreen(y)); ctx.lineTo(ml + pw, yToScreen(y)); ctx.stroke();
+  }
+  for (let x = 0.2; x < 1; x += 0.2) {
+    ctx.beginPath(); ctx.moveTo(xToScreen(x), mt); ctx.lineTo(xToScreen(x), mt + ph); ctx.stroke();
+  }
+
+  // Component curves
+  if (showComponents) {
+    for (let n = 0; n < MAX_LEVELS; n++) {
+      if (normAmps[n] < 1e-4) continue;
+      ctx.strokeStyle = LEVEL_COLORS[n] + '55';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      for (let j = 0; j < N_POINTS; j++) {
+        const val = psi[n][j] * psi[n][j] * normAmps[n] * normAmps[n];
+        j === 0 ? ctx.moveTo(xToScreen(xGrid[j]), yToScreen(val))
+                : ctx.lineTo(xToScreen(xGrid[j]), yToScreen(val));
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Filled probability density
+  const grad = ctx.createLinearGradient(0, yToScreen(yMax), 0, yToScreen(0));
+  grad.addColorStop(0, 'rgba(0,229,255,0.85)');
+  grad.addColorStop(0.5, 'rgba(0,191,165,0.45)');
+  grad.addColorStop(1, 'rgba(0,191,165,0.05)');
+
+  ctx.beginPath();
+  ctx.moveTo(xToScreen(0), yToScreen(0));
+  for (let j = 0; j < N_POINTS; j++) {
+    ctx.lineTo(xToScreen(xGrid[j]), yToScreen(Math.min(prob[j], yMax)));
+  }
+  ctx.lineTo(xToScreen(1), yToScreen(0));
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Outline
+  ctx.strokeStyle = '#00e5ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let j = 0; j < N_POINTS; j++) {
+    j === 0 ? ctx.moveTo(xToScreen(xGrid[j]), yToScreen(Math.min(prob[j], yMax)))
+            : ctx.lineTo(xToScreen(xGrid[j]), yToScreen(Math.min(prob[j], yMax)));
+  }
+  ctx.stroke();
+
+  // Well walls
+  ctx.strokeStyle = '#c8c8e0';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(xToScreen(0), mt); ctx.lineTo(xToScreen(0), mt + ph); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(xToScreen(1), mt); ctx.lineTo(xToScreen(1), mt + ph); ctx.stroke();
+
+  // ⟨x⟩ marker
+  ctx.strokeStyle = '#ffd740';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.moveTo(xToScreen(xExpect), mt); ctx.lineTo(xToScreen(xExpect), mt + ph); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#ffd740';
+  ctx.font = '500 11px "JetBrains Mono", monospace';
+  ctx.fillText(`⟨x⟩ = ${xExpect.toFixed(4)}`, xToScreen(xExpect) + 6, mt + 14);
+
+  // Axis labels
+  ctx.fillStyle = '#6a6a90';
+  ctx.font = '400 11px "JetBrains Mono", monospace';
+  ctx.fillText('x=0', ml - 2, mt + ph + 16);
+  ctx.fillText('x=a', xToScreen(1) - 14, mt + ph + 16);
+  ctx.fillText('|Ψ(x,t)|²', ml + 4, mt + 14);
+
+  // Y axis ticks
+  ctx.fillStyle = 'rgba(200,200,224,0.35)';
+  ctx.font = '300 9px "JetBrains Mono", monospace';
+  for (let y = 0; y <= yMax; y += 1) {
+    ctx.fillText(y.toFixed(0), ml - 18, yToScreen(y) + 3);
+  }
+}
+
+// ===================== DRAWING: TRAJECTORY =====================
+function drawTrajectory() {
+  const w = trajCanvas.getBoundingClientRect().width;
+  const h = trajCanvas.getBoundingClientRect().height;
+  const ctx = trajCtx;
+  ctx.clearRect(0, 0, w, h);
+
+  const ml = 38, mr = 10, mt = 8, mb = 20;
+  const pw = w - ml - mr;
+  const ph = h - mt - mb;
+
+  ctx.fillStyle = '#0c0c20';
+  ctx.fillRect(0, 0, w, h);
+
+  if (trajectoryHistory.length < 2) {
+    ctx.fillStyle = '#6a6a90';
+    ctx.font = '400 9px "JetBrains Mono", monospace';
+    ctx.fillText('trajectory will appear here...', ml + 4, mt + ph / 2);
+    return;
+  }
+
+  const bp = computeBeatPeriod() || 0.3;
+  const timeWindow = Math.max(bp * 2, 0.5);
+  const tEnd = trajectoryHistory[trajectoryHistory.length - 1].t;
+  const tStart = tEnd - timeWindow;
+
+  function tToScreen(tv) { return ml + ((tv - tStart) / timeWindow) * pw; }
+  function yToScreen(y) { return mt + ph - y * ph; }
+
+  // Reference at 0.5
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(ml, yToScreen(0.5)); ctx.lineTo(ml + pw, yToScreen(0.5)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Trajectory
+  ctx.strokeStyle = '#ffd740';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  let started = false;
+  for (const pt of trajectoryHistory) {
+    if (pt.t < tStart) continue;
+    const sx = tToScreen(pt.t);
+    const sy = yToScreen(pt.xExpect);
+    if (!started) { ctx.moveTo(sx, sy); started = true; }
+    else ctx.lineTo(sx, sy);
+  }
+  ctx.stroke();
+
+  ctx.fillStyle = '#6a6a90';
+  ctx.font = '400 9px "JetBrains Mono", monospace';
+  ctx.fillText('⟨x⟩', ml + 2, mt + 9);
+  ctx.fillText('0', ml - 10, yToScreen(0) + 3);
+  ctx.fillText('1', ml - 10, yToScreen(1) + 3);
+  ctx.fillText('½', ml - 12, yToScreen(0.5) + 3);
+  ctx.fillText('t →', ml + pw - 16, mt + ph + 13);
+}
+
+// ===================== DRAWING: PHASORS =====================
+function drawPhasors() {
+  const w = phasorCanvas.getBoundingClientRect().width;
+  const h = phasorCanvas.getBoundingClientRect().height;
+  const ctx = phasorCtx;
+  ctx.clearRect(0, 0, w, h);
+
+  ctx.fillStyle = '#0c0c20';
+  ctx.fillRect(0, 0, w, h);
+
+  const active = [];
+  for (let n = 0; n < MAX_LEVELS; n++) if (normAmps[n] > 1e-4) active.push(n);
+  if (active.length === 0) return;
+
+  const cellW = w / active.length;
+  const r = Math.min(cellW * 0.36, h * 0.33);
+
+  active.forEach((n, i) => {
+    const cx = cellW * (i + 0.5);
+    const cy = h * 0.50;
+
+    // Circle
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * PI); ctx.stroke();
+
+    // Arrow
+    const angle = -E[n] * t + phases[n];
+    const arrowR = normAmps[n] * r;
+    const ax = cx + arrowR * Math.cos(angle);
+    const ay = cy - arrowR * Math.sin(angle);
+
+    ctx.strokeStyle = LEVEL_COLORS[n];
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ax, ay); ctx.stroke();
+
+    ctx.fillStyle = LEVEL_COLORS[n];
+    ctx.beginPath(); ctx.arc(ax, ay, 3, 0, 2 * PI); ctx.fill();
+
+    ctx.font = '600 10px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`n=${n + 1}`, cx, cy + r + 14);
+    ctx.textAlign = 'left';
+  });
+}
+
+// ===================== ANIMATION LOOP =====================
+normalise();
+updateInfoReadout();
+
+function draw(timestamp) {
+  if (running && lastTimestamp !== null) {
+    const dtReal = (timestamp - lastTimestamp) / 1000;
+    const dt = Math.min(dtReal, 0.05);
+    t += dt * speedMultiplier * BASE_TIME_SCALE;
+  }
+  if (running) lastTimestamp = timestamp;
+
+  const prob = computeProbDensity(t);
+  const xExpect = computeExpectation(prob);
+
+  if (running) {
+    trajectoryHistory.push({ t, xExpect });
+    const bp = computeBeatPeriod() || 0.3;
+    const maxTime = Math.max(bp * 2.5, 1);
+    while (trajectoryHistory.length > 0 && trajectoryHistory[0].t < t - maxTime) {
+      trajectoryHistory.shift();
+    }
+  }
+
+  drawMainCanvas(prob, xExpect);
+  drawTrajectory();
+  drawPhasors();
+
+  document.getElementById('timeDisplay').textContent = t.toFixed(4);
+  document.getElementById('xExpectDisplay').textContent = xExpect.toFixed(4);
+
+  requestAnimationFrame(draw);
+}
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
