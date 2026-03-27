@@ -7,26 +7,19 @@
   <meta name="description" content="Multi-instrument Python/tkinter GUI for analyzing Terrestrial Gamma-ray Flashes and lightning dynamics, built for Loyola University Chicago under Dr. Rasha Abbasi.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0e1a;
-      --bg-card: #0f1423;
-      --bg-card-hover: #141a2e;
-      --green: #00ff88;
-      --green-dim: #00cc6a;
-      --green-glow: rgba(0, 255, 136, 0.15);
-      --amber: #ffb340;
-      --amber-dim: #cc8f33;
-      --amber-glow: rgba(255, 179, 64, 0.12);
-      --blue: #4a9eff;
-      --blue-dim: #2a6ecc;
-      --text-primary: #e8eaf0;
-      --text-secondary: #8a8fa8;
-      --border: #1a2038;
-      --border-hover: #2a3058;
-      --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
-      --font-serif: 'Lora', 'Georgia', serif;
+      --bg: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #111111;
+      --text-body: #444444;
+      --text-secondary: #999999;
+      --text-light: #555555;
+      --border: #f0f0f0;
+      --border-medium: #ddd;
+      --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,22 +27,61 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: var(--font-serif);
-      line-height: 1.7;
+      background: var(--bg);
+      color: var(--text-body);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
       -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 40px;
+    }
+
+    /* ── BREADCRUMB NAV ── */
+    .breadcrumb-nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 20px 32px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 500;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumb-nav a {
+      color: var(--text-primary);
+      text-decoration: none;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+    }
+
+    .breadcrumb-nav a:hover {
+      opacity: 1;
+    }
+
+    .breadcrumb-nav .active {
+      opacity: 1;
+    }
+
+    .breadcrumb-nav .sep {
+      color: #999;
+      opacity: 0.25;
+      user-select: none;
     }
 
     /* ── HERO ── */
     .hero {
-      padding: 80px 0 60px;
+      padding: 120px 0 80px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -61,40 +93,42 @@
     }
 
     .hero h1 {
-      font-family: var(--font-mono);
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: var(--green);
+      font-family: var(--font);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-primary);
       margin-bottom: 8px;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
     }
 
     .hero .subtitle {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 13px;
       color: var(--text-secondary);
       margin-bottom: 28px;
-      line-height: 1.5;
+      line-height: 1.6;
+      font-weight: 400;
     }
 
     .stat-pills {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .pill {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 6px 14px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text-secondary);
-      background: var(--bg-card);
+      font-size: 12px;
+      font-weight: 400;
+      padding: 8px 16px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      color: var(--text-light);
+      background: var(--bg);
     }
 
     .pill strong {
-      color: var(--green);
+      color: var(--text-primary);
+      font-weight: 600;
       margin-right: 4px;
     }
 
@@ -112,24 +146,24 @@
     }
 
     /* ── SECTION COMMON ── */
-    section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+    section { padding: 120px 0; border-bottom: 1px solid var(--border); }
     section:last-of-type { border-bottom: none; }
 
     .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--green-dim);
+      letter-spacing: 0.15em;
+      color: var(--text-secondary);
       margin-bottom: 8px;
+      font-weight: 500;
     }
 
     .section-title {
-      font-family: var(--font-mono);
-      font-size: 1.5rem;
-      font-weight: 600;
+      font-size: 22px;
+      font-weight: 500;
       color: var(--text-primary);
-      margin-bottom: 32px;
+      margin-bottom: 40px;
+      line-height: 1.3;
     }
 
     /* ── FIGURE SHOWCASE (CSS-only tabs) ── */
@@ -144,30 +178,31 @@
     .tab-labels {
       display: flex;
       gap: 0;
-      margin-bottom: 24px;
+      margin-bottom: 0;
     }
 
     .tab-labels label {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 24px;
       cursor: pointer;
       border: 1px solid var(--border);
       border-bottom: none;
       color: var(--text-secondary);
-      background: var(--bg-primary);
+      background: #fafafa;
       transition: color 0.2s, background 0.2s;
     }
 
-    .tab-labels label:first-child { border-radius: 6px 0 0 0; }
-    .tab-labels label:last-child { border-radius: 0 6px 0 0; }
+    .tab-labels label:first-child { border-radius: 8px 0 0 0; }
+    .tab-labels label:last-child { border-radius: 0 8px 0 0; }
 
     .tab-panels {
       position: relative;
       border: 1px solid var(--border);
-      border-radius: 0 6px 6px 6px;
+      border-radius: 0 8px 12px 12px;
       overflow: hidden;
       background: var(--bg-card);
+      box-shadow: var(--card-shadow);
     }
 
     .tab-panel {
@@ -177,7 +212,7 @@
 
     #tab-a:checked ~ .tab-labels label[for="tab-a"],
     #tab-b:checked ~ .tab-labels label[for="tab-b"] {
-      color: var(--green);
+      color: var(--text-primary);
       background: var(--bg-card);
       border-color: var(--border);
     }
@@ -197,8 +232,8 @@
       width: 100%;
       height: auto;
       display: block;
-      border-radius: 4px;
-      background: #111528;
+      border-radius: 8px;
+      background: #f8f8f8;
       min-height: 300px;
     }
 
@@ -208,17 +243,17 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: rgba(0, 255, 136, 0.4);
-      border: 2px solid var(--green);
+      background: rgba(74, 144, 217, 0.25);
+      border: 2px solid #4a90d9;
       cursor: pointer;
-      animation: pulse 2s ease-in-out infinite;
+      animation: pulse 2.5s ease-in-out infinite;
       transform: translate(-50%, -50%);
       z-index: 2;
     }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.3); }
+      50% { box-shadow: 0 0 0 10px rgba(74, 144, 217, 0); }
     }
 
     .hotspot .tooltip {
@@ -226,19 +261,19 @@
       bottom: calc(100% + 12px);
       left: 50%;
       transform: translateX(-50%);
-      background: #1a2038;
-      border: 1px solid var(--green-dim);
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      line-height: 1.5;
-      padding: 10px 14px;
-      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 12px 16px;
+      border-radius: 8px;
       width: 260px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.2s;
       z-index: 10;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
     .hotspot .tooltip::after {
@@ -248,7 +283,7 @@
       left: 50%;
       transform: translateX(-50%);
       border: 6px solid transparent;
-      border-top-color: #1a2038;
+      border-top-color: #ffffff;
     }
 
     /* Prevent tooltip overflow on edges */
@@ -265,34 +300,37 @@
     .problem-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--green-dim);
-      border-radius: 0 6px 6px 0;
-      padding: 24px 28px;
+      border-left: 3px solid var(--text-primary);
+      border-radius: 0 12px 12px 0;
+      padding: 28px 32px;
+      box-shadow: var(--card-shadow);
       transition: border-color 0.2s;
     }
 
-    .problem-card:hover { border-left-color: var(--green); }
+    .problem-card:hover { border-left-color: #555; }
 
     .problem-number {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--green-dim);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       margin-bottom: 4px;
     }
 
     .problem-title {
-      font-family: var(--font-mono);
-      font-weight: 600;
-      font-size: 1rem;
-      color: var(--amber);
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--text-primary);
       margin-bottom: 10px;
+      line-height: 1.4;
     }
 
     .problem-body {
-      font-family: var(--font-serif);
-      font-size: 0.92rem;
-      color: var(--text-secondary);
-      line-height: 1.75;
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
     }
 
     /* ── TAB INVENTORY ── */
@@ -305,15 +343,15 @@
     .tab-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .tab-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      border-color: var(--border-hover);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     }
 
     .tab-card-icon {
@@ -323,79 +361,79 @@
     }
 
     .tab-card h3 {
-      font-family: var(--font-mono);
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 500;
       color: var(--text-primary);
       margin-bottom: 8px;
     }
 
     .tab-card p {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: 14px;
-      line-height: 1.6;
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 16px;
+      line-height: 1.7;
+      font-weight: 300;
     }
 
     .badge {
       display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 10px;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 3px 10px;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
       border-radius: 12px;
     }
 
     .badge-complete {
-      background: rgba(0, 255, 136, 0.1);
-      color: var(--green);
-      border: 1px solid rgba(0, 255, 136, 0.25);
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.2);
     }
 
     .badge-progress {
-      background: var(--amber-glow);
-      color: var(--amber);
-      border: 1px solid rgba(255, 179, 64, 0.25);
+      background: rgba(243, 156, 18, 0.1);
+      color: #f39c12;
+      border: 1px solid rgba(243, 156, 18, 0.2);
     }
 
     /* ── TECH STACK TABLE ── */
     .tech-table {
       width: 100%;
       border-collapse: collapse;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 14px;
     }
 
     .tech-table thead th {
       text-align: left;
-      padding: 12px 16px;
-      border-bottom: 2px solid var(--green-dim);
-      color: var(--green);
-      font-weight: 600;
-      font-size: 0.7rem;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--text-primary);
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.12em;
     }
 
     .tech-table tbody td {
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
+      color: var(--text-light);
+      font-weight: 300;
     }
 
     .tech-table tbody td:first-child {
       color: var(--text-primary);
-      font-weight: 600;
+      font-weight: 500;
     }
 
     .tech-table tbody tr:hover td {
-      background: var(--bg-card);
+      background: #fafafa;
     }
 
     /* ── FOOTER ── */
     .site-footer {
-      padding: 48px 0;
+      padding: 60px 0;
       border-top: 1px solid var(--border);
     }
 
@@ -408,29 +446,30 @@
     }
 
     .btn-outline {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
       text-decoration: none;
       padding: 10px 24px;
-      border: 1px solid var(--green-dim);
-      border-radius: 6px;
-      color: var(--green);
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      color: var(--text-primary);
       transition: background 0.2s, color 0.2s;
     }
 
     .btn-outline:hover {
-      background: var(--green);
-      color: var(--bg-primary);
+      background: var(--text-primary);
+      color: #ffffff;
     }
 
     .btn-outline.secondary {
-      border-color: var(--text-secondary);
-      color: var(--text-secondary);
+      border-color: var(--border-medium);
+      color: var(--text-light);
     }
 
     .btn-outline.secondary:hover {
-      background: var(--text-secondary);
-      color: var(--bg-primary);
+      background: var(--text-primary);
+      color: #ffffff;
     }
 
     /* ── RESPONSIVE ── */
@@ -446,20 +485,26 @@
       .tab-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .container {
+        padding: 0 24px;
+      }
     }
 
     @media (max-width: 600px) {
-      .hero { padding: 48px 0 40px; }
-      .hero h1 { font-size: 1.6rem; }
-      .section-title { font-size: 1.2rem; }
+      .hero { padding: 80px 0 48px; }
+      .hero h1 { font-size: 22px; }
+      .section-title { font-size: 18px; }
+
+      section { padding: 80px 0; }
 
       .tab-grid {
         grid-template-columns: 1fr;
       }
 
       .tab-labels label {
-        padding: 8px 14px;
-        font-size: 0.7rem;
+        padding: 10px 14px;
+        font-size: 12px;
       }
 
       .footer-inner {
@@ -468,11 +513,32 @@
       }
 
       .stat-pills { gap: 8px; }
-      .pill { font-size: 0.68rem; padding: 5px 10px; }
+      .pill { font-size: 11px; padding: 6px 12px; }
+
+      .breadcrumb-nav {
+        position: relative;
+        padding: 16px 24px;
+        justify-content: flex-start;
+      }
+
+      .problem-card {
+        padding: 20px 24px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- ── BREADCRUMB NAV ── -->
+  <nav class="breadcrumb-nav">
+    <a href="https://lachlan.site/">Home</a>
+    <span class="sep">/</span>
+    <a href="https://lachlan.site/#projects">Projects</a>
+    <span class="sep">/</span>
+    <a href="#" class="active">TGFs &amp; Lightning</a>
+    <span class="sep">/</span>
+    <a href="https://lachlan.site/qNoise/">qNoise</a>
+  </nav>
 
   <!-- ── HERO ── -->
   <section class="hero">
@@ -490,108 +556,108 @@
         <div class="hero-diagram">
           <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" fill="none">
             <!-- Layer labels -->
-            <text x="10" y="20" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1">DATA PIPELINE</text>
+            <text x="10" y="20" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="9" letter-spacing="1.5" font-weight="500">DATA PIPELINE</text>
 
             <!-- Column 1: Raw Files -->
-            <rect x="10" y="40" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
-            <text x="55" y="61" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">INTF Files</text>
+            <rect x="10" y="40" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+            <text x="55" y="61" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">INTF Files</text>
 
-            <rect x="10" y="82" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
-            <text x="55" y="103" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">PXI Binary</text>
+            <rect x="10" y="82" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+            <text x="55" y="103" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">PXI Binary</text>
 
-            <rect x="10" y="124" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
-            <text x="55" y="145" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">SD / NLDN</text>
+            <rect x="10" y="124" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+            <text x="55" y="145" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">SD / NLDN</text>
 
-            <rect x="10" y="166" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
-            <text x="55" y="187" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">Camera Frames</text>
+            <rect x="10" y="166" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+            <text x="55" y="187" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">Camera Frames</text>
 
-            <rect x="10" y="208" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
-            <text x="55" y="229" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">LMA Data</text>
+            <rect x="10" y="208" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+            <text x="55" y="229" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">LMA Data</text>
 
             <!-- Arrows col 1 → col 2 -->
-            <line x1="100" y1="57" x2="140" y2="75" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="99" x2="140" y2="99" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="141" x2="140" y2="123" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="183" x2="140" y2="155" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="225" x2="140" y2="175" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="57" x2="140" y2="75" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="99" x2="140" y2="99" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="141" x2="140" y2="123" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="183" x2="140" y2="155" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="225" x2="140" y2="175" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
 
-            <!-- Column 2: Data Handlers (blue) -->
-            <rect x="145" y="55" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
-            <text x="197" y="76" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">INTF Handler</text>
+            <!-- Column 2: Data Handlers (pastel blue) -->
+            <rect x="145" y="55" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
+            <text x="197" y="76" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">INTF Handler</text>
 
-            <rect x="145" y="97" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
-            <text x="197" y="118" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">PXI Handler</text>
+            <rect x="145" y="97" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
+            <text x="197" y="118" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">PXI Handler</text>
 
-            <rect x="145" y="139" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
-            <text x="197" y="160" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">SD/NLDN Handler</text>
+            <rect x="145" y="139" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
+            <text x="197" y="160" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">SD/NLDN Handler</text>
 
-            <rect x="145" y="181" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
-            <text x="197" y="202" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Camera Handler</text>
+            <rect x="145" y="181" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
+            <text x="197" y="202" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Camera Handler</text>
 
             <!-- Arrows col 2 → col 3 -->
-            <line x1="250" y1="72" x2="290" y2="85" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="114" x2="290" y2="107" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="156" x2="290" y2="130" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="198" x2="290" y2="152" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="72" x2="290" y2="85" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="114" x2="290" y2="107" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="156" x2="290" y2="130" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="198" x2="290" y2="152" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
 
-            <!-- Column 3: Analysis Modules (amber) -->
-            <rect x="295" y="55" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
-            <text x="350" y="76" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Calibration</text>
+            <!-- Column 3: Analysis Modules (pastel amber) -->
+            <rect x="295" y="55" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
+            <text x="350" y="76" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Calibration</text>
 
-            <rect x="295" y="97" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
-            <text x="350" y="118" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Signal Proc</text>
+            <rect x="295" y="97" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
+            <text x="350" y="118" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Signal Proc</text>
 
-            <rect x="295" y="139" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
-            <text x="350" y="160" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Photometry</text>
+            <rect x="295" y="139" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
+            <text x="350" y="160" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Photometry</text>
 
-            <rect x="295" y="181" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
-            <text x="350" y="202" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Map Engine</text>
+            <rect x="295" y="181" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
+            <text x="350" y="202" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Map Engine</text>
 
             <!-- Arrows col 3 → col 4 -->
-            <line x1="405" y1="72" x2="445" y2="85" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="114" x2="445" y2="107" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="156" x2="445" y2="130" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="198" x2="445" y2="152" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="72" x2="445" y2="85" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="114" x2="445" y2="107" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="156" x2="445" y2="130" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="198" x2="445" y2="152" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
 
-            <!-- Column 4: GUI Tabs (green) -->
-            <rect x="450" y="50" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="69" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Home Tab</text>
+            <!-- Column 4: GUI Tabs (pastel green) -->
+            <rect x="450" y="50" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="69" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Home Tab</text>
 
-            <rect x="450" y="86" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="105" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">INTF Tab</text>
+            <rect x="450" y="86" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="105" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">INTF Tab</text>
 
-            <rect x="450" y="122" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="141" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Photometry</text>
+            <rect x="450" y="122" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="141" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Photometry</text>
 
-            <rect x="450" y="158" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="177" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Spectroscopy</text>
+            <rect x="450" y="158" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="177" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Spectroscopy</text>
 
-            <rect x="450" y="194" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="213" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Map Viz</text>
+            <rect x="450" y="194" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="213" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Map Viz</text>
 
-            <rect x="450" y="230" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
-            <text x="500" y="249" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Flash Overview</text>
+            <rect x="450" y="230" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
+            <text x="500" y="249" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Flash Overview</text>
 
             <!-- Output arrow -->
-            <line x1="500" y1="265" x2="500" y2="295" stroke="#00ff88" stroke-width="1" marker-end="url(#arrowGreen)"/>
-            <rect x="430" y="298" width="140" height="30" rx="6" fill="rgba(0,255,136,0.05)" stroke="#00ff88" stroke-width="1" stroke-dasharray="4 2"/>
-            <text x="500" y="317" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Publication Figures</text>
+            <line x1="500" y1="265" x2="500" y2="295" stroke="#888" stroke-width="1" marker-end="url(#arrowDark)"/>
+            <rect x="430" y="298" width="140" height="30" rx="6" fill="#fafafa" stroke="#ccc" stroke-width="1" stroke-dasharray="4 2"/>
+            <text x="500" y="317" fill="#555" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Publication Figures</text>
 
             <!-- Legend -->
-            <rect x="10" y="275" width="10" height="10" rx="2" fill="rgba(74,158,255,0.3)" stroke="#4a9eff" stroke-width="0.5"/>
-            <text x="26" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">Handlers</text>
-            <rect x="85" y="275" width="10" height="10" rx="2" fill="rgba(255,179,64,0.3)" stroke="#ffb340" stroke-width="0.5"/>
-            <text x="101" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">Analysis</text>
-            <rect x="160" y="275" width="10" height="10" rx="2" fill="rgba(0,255,136,0.2)" stroke="#00ff88" stroke-width="0.5"/>
-            <text x="176" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">GUI</text>
+            <rect x="10" y="275" width="10" height="10" rx="2" fill="#eef4ff" stroke="#a8c8f0" stroke-width="0.5"/>
+            <text x="26" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">Handlers</text>
+            <rect x="85" y="275" width="10" height="10" rx="2" fill="#fff8ee" stroke="#e0c090" stroke-width="0.5"/>
+            <text x="101" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">Analysis</text>
+            <rect x="160" y="275" width="10" height="10" rx="2" fill="#eefaf2" stroke="#a0d8b0" stroke-width="0.5"/>
+            <text x="176" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">GUI</text>
 
             <!-- Arrow markers -->
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#3a4060"/>
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ccc"/>
               </marker>
-              <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#00ff88"/>
+              <marker id="arrowDark" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
               </marker>
             </defs>
           </svg>
