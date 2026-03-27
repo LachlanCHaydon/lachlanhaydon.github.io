@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loyola Lightning Machine — TGF Research GUI</title>
+  <meta name="description" content="Multi-instrument Python/tkinter GUI for analyzing Terrestrial Gamma-ray Flashes and lightning dynamics, built for Loyola University Chicago under Dr. Rasha Abbasi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-card: #0f1423;
+      --bg-card-hover: #141a2e;
+      --green: #00ff88;
+      --green-dim: #00cc6a;
+      --green-glow: rgba(0, 255, 136, 0.15);
+      --amber: #ffb340;
+      --amber-dim: #cc8f33;
+      --amber-glow: rgba(255, 179, 64, 0.12);
+      --blue: #4a9eff;
+      --blue-dim: #2a6ecc;
+      --text-primary: #e8eaf0;
+      --text-secondary: #8a8fa8;
+      --border: #1a2038;
+      --border-hover: #2a3058;
+      --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+      --font-serif: 'Lora', 'Georgia', serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-serif);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 80px 0 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-family: var(--font-mono);
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero .subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .stat-pills {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+    }
+
+    .pill strong {
+      color: var(--green);
+      margin-right: 4px;
+    }
+
+    .hero-diagram {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .hero-diagram svg {
+      display: block;
+      width: 100%;
+      max-width: 560px;
+      height: auto;
+      margin-left: auto;
+    }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--green-dim);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+    }
+
+    /* ── FIGURE SHOWCASE (CSS-only tabs) ── */
+    .tab-switcher {
+      position: relative;
+    }
+
+    .tab-switcher input[type="radio"] {
+      display: none;
+    }
+
+    .tab-labels {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+    }
+
+    .tab-labels label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 10px 24px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .tab-labels label:first-child { border-radius: 6px 0 0 0; }
+    .tab-labels label:last-child { border-radius: 0 6px 0 0; }
+
+    .tab-panels {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 0 6px 6px 6px;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 24px;
+    }
+
+    #tab-a:checked ~ .tab-labels label[for="tab-a"],
+    #tab-b:checked ~ .tab-labels label[for="tab-b"] {
+      color: var(--green);
+      background: var(--bg-card);
+      border-color: var(--border);
+    }
+
+    #tab-a:checked ~ .tab-panels .panel-a,
+    #tab-b:checked ~ .tab-panels .panel-b {
+      display: block;
+    }
+
+    .figure-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .figure-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      background: #111528;
+      min-height: 300px;
+    }
+
+    /* Hotspots */
+    .hotspot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0, 255, 136, 0.4);
+      border: 2px solid var(--green);
+      cursor: pointer;
+      animation: pulse 2s ease-in-out infinite;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+    }
+
+    .hotspot .tooltip {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a2038;
+      border: 1px solid var(--green-dim);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      line-height: 1.5;
+      padding: 10px 14px;
+      border-radius: 6px;
+      width: 260px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+
+    .hotspot .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1a2038;
+    }
+
+    /* Prevent tooltip overflow on edges */
+    .hotspot.tip-right .tooltip { left: auto; right: -10px; transform: none; }
+    .hotspot.tip-right .tooltip::after { left: auto; right: 16px; transform: none; }
+    .hotspot.tip-left .tooltip { left: -10px; right: auto; transform: none; }
+    .hotspot.tip-left .tooltip::after { left: 16px; right: auto; transform: none; }
+
+    .hotspot:hover .tooltip { opacity: 1; }
+
+    /* ── PROBLEMS ── */
+    .problem-list { display: flex; flex-direction: column; gap: 20px; }
+
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green-dim);
+      border-radius: 0 6px 6px 0;
+      padding: 24px 28px;
+      transition: border-color 0.2s;
+    }
+
+    .problem-card:hover { border-left-color: var(--green); }
+
+    .problem-number {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--green-dim);
+      margin-bottom: 4px;
+    }
+
+    .problem-title {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+
+    .problem-body {
+      font-family: var(--font-serif);
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ── TAB INVENTORY ── */
+    .tab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .tab-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .tab-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border-color: var(--border-hover);
+    }
+
+    .tab-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .tab-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .tab-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .badge-complete {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(0, 255, 136, 0.25);
+    }
+
+    .badge-progress {
+      background: var(--amber-glow);
+      color: var(--amber);
+      border: 1px solid rgba(255, 179, 64, 0.25);
+    }
+
+    /* ── TECH STACK TABLE ── */
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .tech-table thead th {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--green-dim);
+      color: var(--green);
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .tech-table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .tech-table tbody td:first-child {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .tech-table tbody tr:hover td {
+      background: var(--bg-card);
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn-outline {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-decoration: none;
+      padding: 10px 24px;
+      border: 1px solid var(--green-dim);
+      border-radius: 6px;
+      color: var(--green);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: var(--green);
+      color: var(--bg-primary);
+    }
+
+    .btn-outline.secondary {
+      border-color: var(--text-secondary);
+      color: var(--text-secondary);
+    }
+
+    .btn-outline.secondary:hover {
+      background: var(--text-secondary);
+      color: var(--bg-primary);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-diagram svg {
+        margin: 0 auto;
+      }
+
+      .tab-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 48px 0 40px; }
+      .hero h1 { font-size: 1.6rem; }
+      .section-title { font-size: 1.2rem; }
+
+      .tab-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-labels label {
+        padding: 8px 14px;
+        font-size: 0.7rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stat-pills { gap: 8px; }
+      .pill { font-size: 0.68rem; padding: 5px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>Loyola Lightning Machine</h1>
+          <p class="subtitle">Multi-instrument GUI for TGF research &middot; Python &middot; tkinter &middot; 2024&ndash;2026</p>
+          <div class="stat-pills">
+            <span class="pill"><strong>8</strong> instrument types</span>
+            <span class="pill"><strong>6</strong> analysis tabs</span>
+            <span class="pill"><strong>2</strong> published events</span>
+          </div>
+        </div>
+        <div class="hero-diagram">
+          <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <!-- Layer labels -->
+            <text x="10" y="20" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1">DATA PIPELINE</text>
+
+            <!-- Column 1: Raw Files -->
+            <rect x="10" y="40" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
+            <text x="55" y="61" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">INTF Files</text>
+
+            <rect x="10" y="82" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
+            <text x="55" y="103" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">PXI Binary</text>
+
+            <rect x="10" y="124" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
+            <text x="55" y="145" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">SD / NLDN</text>
+
+            <rect x="10" y="166" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
+            <text x="55" y="187" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">Camera Frames</text>
+
+            <rect x="10" y="208" width="90" height="34" rx="6" fill="#1a2038" stroke="#3a4060" stroke-width="1"/>
+            <text x="55" y="229" fill="#e8eaf0" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle">LMA Data</text>
+
+            <!-- Arrows col 1 → col 2 -->
+            <line x1="100" y1="57" x2="140" y2="75" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="99" x2="140" y2="99" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="141" x2="140" y2="123" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="183" x2="140" y2="155" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="100" y1="225" x2="140" y2="175" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+
+            <!-- Column 2: Data Handlers (blue) -->
+            <rect x="145" y="55" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
+            <text x="197" y="76" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">INTF Handler</text>
+
+            <rect x="145" y="97" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
+            <text x="197" y="118" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">PXI Handler</text>
+
+            <rect x="145" y="139" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
+            <text x="197" y="160" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">SD/NLDN Handler</text>
+
+            <rect x="145" y="181" width="105" height="34" rx="6" fill="rgba(74,158,255,0.1)" stroke="#4a9eff" stroke-width="1"/>
+            <text x="197" y="202" fill="#4a9eff" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Camera Handler</text>
+
+            <!-- Arrows col 2 → col 3 -->
+            <line x1="250" y1="72" x2="290" y2="85" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="114" x2="290" y2="107" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="156" x2="290" y2="130" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="250" y1="198" x2="290" y2="152" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+
+            <!-- Column 3: Analysis Modules (amber) -->
+            <rect x="295" y="55" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
+            <text x="350" y="76" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Calibration</text>
+
+            <rect x="295" y="97" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
+            <text x="350" y="118" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Signal Proc</text>
+
+            <rect x="295" y="139" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
+            <text x="350" y="160" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Photometry</text>
+
+            <rect x="295" y="181" width="110" height="34" rx="6" fill="rgba(255,179,64,0.1)" stroke="#ffb340" stroke-width="1"/>
+            <text x="350" y="202" fill="#ffb340" font-family="IBM Plex Mono, monospace" font-size="8.5" text-anchor="middle">Map Engine</text>
+
+            <!-- Arrows col 3 → col 4 -->
+            <line x1="405" y1="72" x2="445" y2="85" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="114" x2="445" y2="107" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="156" x2="445" y2="130" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+            <line x1="405" y1="198" x2="445" y2="152" stroke="#3a4060" stroke-width="1" marker-end="url(#arrow)"/>
+
+            <!-- Column 4: GUI Tabs (green) -->
+            <rect x="450" y="50" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="69" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Home Tab</text>
+
+            <rect x="450" y="86" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="105" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">INTF Tab</text>
+
+            <rect x="450" y="122" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="141" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Photometry</text>
+
+            <rect x="450" y="158" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="177" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Spectroscopy</text>
+
+            <rect x="450" y="194" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="213" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Map Viz</text>
+
+            <rect x="450" y="230" width="100" height="30" rx="6" fill="rgba(0,255,136,0.08)" stroke="#00ff88" stroke-width="1"/>
+            <text x="500" y="249" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Flash Overview</text>
+
+            <!-- Output arrow -->
+            <line x1="500" y1="265" x2="500" y2="295" stroke="#00ff88" stroke-width="1" marker-end="url(#arrowGreen)"/>
+            <rect x="430" y="298" width="140" height="30" rx="6" fill="rgba(0,255,136,0.05)" stroke="#00ff88" stroke-width="1" stroke-dasharray="4 2"/>
+            <text x="500" y="317" fill="#00ff88" font-family="IBM Plex Mono, monospace" font-size="8" text-anchor="middle">Publication Figures</text>
+
+            <!-- Legend -->
+            <rect x="10" y="275" width="10" height="10" rx="2" fill="rgba(74,158,255,0.3)" stroke="#4a9eff" stroke-width="0.5"/>
+            <text x="26" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">Handlers</text>
+            <rect x="85" y="275" width="10" height="10" rx="2" fill="rgba(255,179,64,0.3)" stroke="#ffb340" stroke-width="0.5"/>
+            <text x="101" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">Analysis</text>
+            <rect x="160" y="275" width="10" height="10" rx="2" fill="rgba(0,255,136,0.2)" stroke="#00ff88" stroke-width="0.5"/>
+            <text x="176" y="284" fill="#8a8fa8" font-family="IBM Plex Mono, monospace" font-size="8">GUI</text>
+
+            <!-- Arrow markers -->
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#3a4060"/>
+              </marker>
+              <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#00ff88"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ANNOTATED FIGURE SHOWCASE ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Figures</p>
+      <h2 class="section-title">Annotated Figure Showcase</h2>
+
+      <div class="tab-switcher">
+        <input type="radio" name="fig-tabs" id="tab-a" checked>
+        <input type="radio" name="fig-tabs" id="tab-b">
+
+        <div class="tab-labels">
+          <label for="tab-a">Flash Overview Plot</label>
+          <label for="tab-b">INTF Calibration</label>
+        </div>
+
+        <div class="tab-panels">
+          <div class="tab-panel panel-a">
+            <div class="figure-container">
+              <img src="/images/flash_overview.png" alt="Flash Overview Plot showing synchronized multi-instrument data for a TGF-producing lightning flash">
+
+              <!-- Hotspot: INTF scatter cluster (upper-left area) -->
+              <div class="hotspot" style="top: 20%; left: 35%;">
+                <div class="tooltip">VHF interferometer: 3000+ sources, cosine-shift calibrated via LMA cross-matching</div>
+              </div>
+
+              <!-- Hotspot: FA waveform (mid-left) -->
+              <div class="hotspot" style="top: 48%; left: 25%;">
+                <div class="tooltip">Fast antenna T0 used as master time reference across all instruments</div>
+              </div>
+
+              <!-- Hotspot: 337nm photometer peak (mid-right) -->
+              <div class="hotspot tip-right" style="top: 62%; left: 70%;">
+                <div class="tooltip">30 MHz PXI digitizer; baseline subtracted and irradiance-calibrated per Roncancio et al. 2024</div>
+              </div>
+
+              <!-- Hotspot: Camera frame strip (bottom) -->
+              <div class="hotspot" style="top: 85%; left: 50%;">
+                <div class="tooltip">Phantom v2012 frames linked to time axis via ConnectionPatch</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel panel-b">
+            <div class="figure-container">
+              <img src="/images/intf_calibration.png" alt="INTF calibration comparison showing LMA cross-match vs NLDN cosine-shift methods">
+
+              <!-- Hotspot: LMA cross-match -->
+              <div class="hotspot" style="top: 35%; left: 40%;">
+                <div class="tooltip">LMA cross-matching method: independently validates calibration offsets using sigma-separation statistics against reference sources</div>
+              </div>
+
+              <!-- Hotspot: Cosine-shift precision -->
+              <div class="hotspot tip-right" style="top: 60%; left: 72%;">
+                <div class="tooltip">Cosine-shift precision: ~0.059 degrees, validated against Mark Stanley's 2024 reference values</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HARDEST PROBLEMS SOLVED ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Engineering</p>
+      <h2 class="section-title">Hardest Problems Solved</h2>
+
+      <div class="problem-list">
+        <div class="problem-card">
+          <div class="problem-number">[01]</div>
+          <div class="problem-title">Cross-second reference frame mismatch</div>
+          <p class="problem-body">INTF and SD data are referenced to different clock seconds. This causes a silent failure: no INTF points are found in the expected window, and the application crashes on an empty array. Fixed by exposing a &plusmn;1,000,000 &micro;s offset selector with live data span visualization so the operator can align the reference frames manually before analysis.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-number">[02]</div>
+          <div class="problem-title">INTF trigger vs FA T0 confusion</div>
+          <p class="problem-body">The INTF header timestamp and the fast antenna T0 microsecond component look deceptively similar but can differ by millions of microseconds. Built a convention enforcing FA T0 as the master time reference across all instruments, eliminating an entire class of off-by-one-second alignment bugs.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-number">[03]</div>
+          <div class="problem-title">LMA calibration vs NLDN calibration precision</div>
+          <p class="problem-body">NLDN-based cosine shifts are accurate to approximately 0.5 degrees, while LMA cross-matching achieves approximately 0.059 degrees. Both methods were independently derived and validated against Mark Stanley's 2024 reference values using sigma-separation statistics, confirming the LMA approach as the higher-fidelity calibration path.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-number">[04]</div>
+          <div class="problem-title">777nm PMT saturation (dynode voltage droop)</div>
+          <p class="problem-body">Anomalous initial breakdown pulse spikes in the 777nm channel were traced to the R2228 PMT socket lacking the bypass capacitors present on the UV-band channels. This causes dynode voltage droop under high photon flux, distorting the 337/777 and 391/777 intensity ratios. The artifact is flagged in all downstream spectroscopic analysis.</p>
+        </div>
+
+        <div class="problem-card">
+          <div class="problem-number">[05]</div>
+          <div class="problem-title">Sample rate assumption (20 vs 30 MHz)</div>
+          <p class="problem-body">The GUI originally defaulted to 20 MHz, but the actual PXI-5105 digitizer is configured at 30 MS/s per the instrument paper. At the wrong sample rate, the file reader calculates incorrect channel offsets, causing channels 1 through 3 to read zero real samples as the file pointer advances past EOF after the first channel. Fixed by verifying expected file size against the sample rate and making it a per-load parameter.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TAB INVENTORY ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Interface</p>
+      <h2 class="section-title">Tab Inventory</h2>
+
+      <div class="tab-grid">
+        <div class="tab-card">
+          <span class="tab-card-icon">&#9889;</span>
+          <h3>Home (Master Plotter)</h3>
+          <p>Central control panel for loading events and coordinating data across all instruments. Provides the master time-axis plot with synchronized cursors and instrument toggle controls.</p>
+          <span class="badge badge-complete">Complete</span>
+        </div>
+
+        <div class="tab-card">
+          <span class="tab-card-icon">&#128225;</span>
+          <h3>INTF</h3>
+          <p>VHF interferometer analysis with elevation/azimuth scatter plots, source filtering, and cosine-shift calibration tools. Supports both NLDN and LMA cross-matching workflows.</p>
+          <span class="badge badge-complete">Complete</span>
+        </div>
+
+        <div class="tab-card">
+          <span class="tab-card-icon">&#128300;</span>
+          <h3>Photometry</h3>
+          <p>Optical channel viewer for 337nm, 777nm, and 391nm photometer waveforms. Includes baseline subtraction, irradiance calibration, and multi-channel overlay comparison.</p>
+          <span class="badge badge-complete">Complete</span>
+        </div>
+
+        <div class="tab-card">
+          <span class="tab-card-icon">&#128200;</span>
+          <h3>Spectroscopy</h3>
+          <p>Computes and visualizes wavelength intensity ratios (337/777, 391/777) across the flash timeline. Includes PMT saturation flagging and ratio trend analysis tools.</p>
+          <span class="badge badge-progress">In Progress</span>
+        </div>
+
+        <div class="tab-card">
+          <span class="tab-card-icon">&#128506;</span>
+          <h3>Map Visualizer (NLDN)</h3>
+          <p>Geographic plotting of NLDN lightning stroke locations overlaid on the Telescope Array surface detector grid. Supports distance filtering and event clustering display.</p>
+          <span class="badge badge-complete">Complete</span>
+        </div>
+
+        <div class="tab-card">
+          <span class="tab-card-icon">&#127785;</span>
+          <h3>Flash Overview</h3>
+          <p>Publication-quality composite figure generator combining INTF, fast antenna, photometer, and high-speed camera data into a single synchronized multi-panel plot.</p>
+          <span class="badge badge-complete">Complete</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TECH STACK ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Stack</p>
+      <h2 class="section-title">Tech Stack</h2>
+
+      <table class="tech-table">
+        <thead>
+          <tr>
+            <th>Technology</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Python 3</td><td>Core language</td></tr>
+          <tr><td>tkinter</td><td>GUI framework</td></tr>
+          <tr><td>matplotlib (TkAgg)</td><td>Embedded plots</td></tr>
+          <tr><td>numpy + scipy</td><td>Signal processing and statistics</td></tr>
+          <tr><td>pandas</td><td>Data I/O</td></tr>
+          <tr><td>Jekyll</td><td>Site framework</td></tr>
+          <tr><td>GitHub Pages</td><td>Hosting</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="https://github.com/LachlanCHaydon/LoyolaLightningMachine" class="btn-outline" target="_blank" rel="noopener">View on GitHub</a>
+        <a href="https://lachlan.site/#projects" class="btn-outline secondary">Back to Projects</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
