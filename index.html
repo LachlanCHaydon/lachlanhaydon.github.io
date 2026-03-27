@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/index-DepN8GDb.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D0vb5eLh.css">
+    <script type="module" crossorigin src="/assets/index-CzXNH8jR.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-HZDCznCn.css">
   </head>
   <body>
     <nav class="nav">
@@ -109,7 +109,7 @@
 
         <div class="experience-item">
           <div class="experience-meta">
-            <span class="experience-date">2019 -- Present</span>
+            <span class="experience-date">2019 Present</span>
           </div>
           <div class="experience-body">
             <h3>Part Time Roles: Lifeguard, Physics Tutor, Grounds Keeper</h3>
@@ -136,15 +136,13 @@
           </div>
         </div>
 
-        <!-- Quantum Mechanics Card -->
-        <div class="project-card" data-target="detail-quantum">
+        <!-- qNoise Card -->
+        <div class="project-card" data-target="detail-qnoise">
           <div class="project-card-inner">
-            <div class="project-card-placeholder">
-              <span>In Development</span>
-            </div>
+            <img src="/images/qnoise-preview.png" alt="qNoise — Quantum Noise Characterization" />
             <div class="project-card-overlay">
-              <h3>Quantum Mechanics Visualizations</h3>
-              <span>Interactive Learning Tools</span>
+              <h3>qNoise</h3>
+              <span>Quantum Hardware Noise &middot; IBM Quantum</span>
             </div>
           </div>
         </div>
@@ -227,12 +225,59 @@
         </div>
       </div>
 
-      <!-- Quantum Project Detail (placeholder) -->
-      <div class="project-detail" id="detail-quantum">
+      <!-- qNoise Project Detail -->
+      <div class="project-detail" id="detail-qnoise">
         <button class="project-detail-close" aria-label="Close">&times;</button>
+
+        <div class="project-detail-hero">
+          <img src="/images/qnoise-preview.png" alt="qNoise dashboard" />
+        </div>
+
         <div class="project-detail-content">
-          <h3>Quantum Mechanics Visualizations</h3>
-          <p>This project is currently in development. Check back soon!</p>
+          <h3>qNoise &mdash; Quantum Hardware Noise Characterization</h3>
+          <p class="project-detail-meta">
+            Independent Project &middot; IBM Quantum (ibm_fez, 156-qubit Heron processor)
+            &middot; Targeting Infleqtion / Superstaq
+          </p>
+
+          <p>
+            An automated pipeline that characterizes noise on real quantum hardware
+            and benchmarks quantum compilation strategies. Every data point was measured
+            on IBM's ibm_fez superconducting processor. The core question: does
+            Infleqtion's Superstaq compiler produce circuits that perform better on
+            noisy hardware than Qiskit's default optimizer?
+          </p>
+
+          <h4>What It Measures</h4>
+          <ul>
+            <li><strong>T1 (Energy Relaxation)</strong> &mdash; How long a qubit holds the |1&rangle; state before decaying</li>
+            <li><strong>T2 (Coherence, Hahn Echo)</strong> &mdash; How long a qubit maintains quantum superposition</li>
+            <li><strong>Readout Error</strong> &mdash; Measurement confusion matrix for each qubit</li>
+            <li><strong>Compilation Fidelity</strong> &mdash; Hellinger fidelity of Qiskit vs Superstaq compiled circuits on real hardware</li>
+          </ul>
+
+          <h4>Key Finding</h4>
+          <p>
+            Qubit noise properties drift significantly over hours &mdash; T1 values ranged
+            from 23&ndash;266 &mu;s across runs, and qubit rankings flipped entirely within
+            2.5 hours. In compilation benchmarks, Superstaq achieved higher fidelity on
+            QFT circuits despite deeper compiled depth, by minimizing two-qubit gate count
+            &mdash; the dominant error source on superconducting hardware.
+          </p>
+
+          <h4>Live Dashboard</h4>
+          <p>
+            <a href="/qNoise/" style="color: #4a7fff; text-decoration: underline;">
+              View the live qNoise dashboard &rarr;
+            </a>
+            <br />Updated with new hardware measurements as they are collected.
+          </p>
+
+          <p class="project-detail-tech">
+            Python 3.12 &middot; Qiskit 2.3 &middot; qiskit-ibm-runtime (SamplerV2)
+            &middot; qiskit-superstaq &middot; SQLAlchemy &middot; SciPy
+            &middot; Plotly &middot; IBM Quantum
+          </p>
         </div>
       </div>
 
