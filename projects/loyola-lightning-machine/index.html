@@ -132,17 +132,14 @@
       margin-right: 4px;
     }
 
-    .hero-diagram {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .hero-diagram svg {
-      display: block;
-      width: 100%;
-      max-width: 560px;
-      height: auto;
-      margin-left: auto;
+    .hero-pipeline {
+      border-left: 3px solid var(--border-medium);
+      padding: 20px 24px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-light);
+      font-weight: 300;
+      font-style: italic;
     }
 
     /* ── SECTION COMMON ── */
@@ -166,141 +163,146 @@
       line-height: 1.3;
     }
 
-    /* ── FIGURE SHOWCASE (CSS-only tabs) ── */
-    .tab-switcher {
+    /* ── SLIDESHOW ── */
+    .slideshow {
       position: relative;
     }
 
-    .tab-switcher input[type="radio"] {
-      display: none;
-    }
-
-    .tab-labels {
+    .slideshow-image-wrap {
+      width: 100%;
+      height: 400px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      background: #f8f8f8;
       display: flex;
-      gap: 0;
-      margin-bottom: 0;
+      align-items: center;
+      justify-content: center;
     }
 
-    .tab-labels label {
+    .slideshow-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .slideshow-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .slideshow-btn {
+      font-family: var(--font);
       font-size: 13px;
       font-weight: 500;
-      padding: 12px 24px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      color: var(--text-secondary);
-      background: #fafafa;
-      transition: color 0.2s, background 0.2s;
-    }
-
-    .tab-labels label:first-child { border-radius: 8px 0 0 0; }
-    .tab-labels label:last-child { border-radius: 0 8px 0 0; }
-
-    .tab-panels {
-      position: relative;
-      border: 1px solid var(--border);
-      border-radius: 0 8px 12px 12px;
-      overflow: hidden;
-      background: var(--bg-card);
-      box-shadow: var(--card-shadow);
-    }
-
-    .tab-panel {
-      display: none;
-      padding: 24px;
-    }
-
-    #tab-a:checked ~ .tab-labels label[for="tab-a"],
-    #tab-b:checked ~ .tab-labels label[for="tab-b"] {
+      padding: 8px 18px;
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      background: var(--bg);
       color: var(--text-primary);
-      background: var(--bg-card);
-      border-color: var(--border);
-    }
-
-    #tab-a:checked ~ .tab-panels .panel-a,
-    #tab-b:checked ~ .tab-panels .panel-b {
-      display: block;
-    }
-
-    .figure-container {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .figure-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 8px;
-      background: #f8f8f8;
-      min-height: 300px;
-    }
-
-    /* Hotspots */
-    .hotspot {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: rgba(74, 144, 217, 0.25);
-      border: 2px solid #4a90d9;
       cursor: pointer;
-      animation: pulse 2.5s ease-in-out infinite;
-      transform: translate(-50%, -50%);
-      z-index: 2;
+      transition: background 0.2s, color 0.2s;
     }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.3); }
-      50% { box-shadow: 0 0 0 10px rgba(74, 144, 217, 0); }
+    .slideshow-btn:hover {
+      background: var(--text-primary);
+      color: #ffffff;
     }
 
-    .hotspot .tooltip {
-      position: absolute;
-      bottom: calc(100% + 12px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: #ffffff;
-      border: 1px solid var(--border);
+    .slideshow-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .slideshow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-medium);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      padding: 0;
+    }
+
+    .slideshow-dot.active {
+      background: var(--text-primary);
+    }
+
+    .slideshow-caption {
+      margin-top: 24px;
+    }
+
+    .slideshow-caption h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .slideshow-caption p {
+      font-size: 14px;
       color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    /* ── SPECTROSCOPY SECTION ── */
+    .spectro-subheading {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .spectro-body p {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .feature-tag {
       font-size: 12px;
-      line-height: 1.6;
-      padding: 12px 16px;
+      font-weight: 400;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      width: 260px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 10;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      color: var(--text-light);
+      background: #fafafa;
+      text-align: center;
     }
 
-    .hotspot .tooltip::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: #ffffff;
+    /* ── ENGINEERING NOTES ── */
+    .eng-heading {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
     }
 
-    /* Prevent tooltip overflow on edges */
-    .hotspot.tip-right .tooltip { left: auto; right: -10px; transform: none; }
-    .hotspot.tip-right .tooltip::after { left: auto; right: 16px; transform: none; }
-    .hotspot.tip-left .tooltip { left: -10px; right: auto; transform: none; }
-    .hotspot.tip-left .tooltip::after { left: 16px; right: auto; transform: none; }
-
-    .hotspot:hover .tooltip { opacity: 1; }
-
-    /* ── PROBLEMS ── */
     .problem-list { display: flex; flex-direction: column; gap: 20px; }
 
     .problem-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--text-primary);
+      border-left: 3px solid var(--border-medium);
       border-radius: 0 12px 12px 0;
       padding: 28px 32px;
       box-shadow: var(--card-shadow);
@@ -308,15 +310,6 @@
     }
 
     .problem-card:hover { border-left-color: #555; }
-
-    .problem-number {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 4px;
-    }
 
     .problem-title {
       font-weight: 500;
@@ -331,70 +324,6 @@
       color: var(--text-body);
       line-height: 1.8;
       font-weight: 300;
-    }
-
-    /* ── TAB INVENTORY ── */
-    .tab-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .tab-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: var(--card-shadow);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .tab-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .tab-card-icon {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    .tab-card h3 {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .tab-card p {
-      font-size: 13px;
-      color: var(--text-light);
-      margin-bottom: 16px;
-      line-height: 1.7;
-      font-weight: 300;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 4px 12px;
-      border-radius: 12px;
-    }
-
-    .badge-complete {
-      background: rgba(46, 204, 113, 0.1);
-      color: #2ecc71;
-      border: 1px solid rgba(46, 204, 113, 0.2);
-    }
-
-    .badge-progress {
-      background: rgba(243, 156, 18, 0.1);
-      color: #f39c12;
-      border: 1px solid rgba(243, 156, 18, 0.2);
     }
 
     /* ── TECH STACK TABLE ── */
@@ -478,11 +407,7 @@
         grid-template-columns: 1fr;
       }
 
-      .hero-diagram svg {
-        margin: 0 auto;
-      }
-
-      .tab-grid {
+      .feature-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
@@ -498,13 +423,12 @@
 
       section { padding: 80px 0; }
 
-      .tab-grid {
+      .feature-grid {
         grid-template-columns: 1fr;
       }
 
-      .tab-labels label {
-        padding: 10px 14px;
-        font-size: 12px;
+      .slideshow-image-wrap {
+        height: 260px;
       }
 
       .footer-inner {
@@ -553,268 +477,77 @@
             <span class="pill"><strong>2</strong> published events</span>
           </div>
         </div>
-        <div class="hero-diagram">
-          <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" fill="none">
-            <!-- Layer labels -->
-            <text x="10" y="20" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="9" letter-spacing="1.5" font-weight="500">DATA PIPELINE</text>
-
-            <!-- Column 1: Raw Files -->
-            <rect x="10" y="40" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
-            <text x="55" y="61" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">INTF Files</text>
-
-            <rect x="10" y="82" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
-            <text x="55" y="103" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">PXI Binary</text>
-
-            <rect x="10" y="124" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
-            <text x="55" y="145" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">SD / NLDN</text>
-
-            <rect x="10" y="166" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
-            <text x="55" y="187" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">Camera Frames</text>
-
-            <rect x="10" y="208" width="90" height="34" rx="6" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
-            <text x="55" y="229" fill="#333" font-family="Inter, system-ui, sans-serif" font-size="9" text-anchor="middle" font-weight="500">LMA Data</text>
-
-            <!-- Arrows col 1 → col 2 -->
-            <line x1="100" y1="57" x2="140" y2="75" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="99" x2="140" y2="99" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="141" x2="140" y2="123" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="183" x2="140" y2="155" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="100" y1="225" x2="140" y2="175" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-
-            <!-- Column 2: Data Handlers (pastel blue) -->
-            <rect x="145" y="55" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
-            <text x="197" y="76" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">INTF Handler</text>
-
-            <rect x="145" y="97" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
-            <text x="197" y="118" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">PXI Handler</text>
-
-            <rect x="145" y="139" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
-            <text x="197" y="160" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">SD/NLDN Handler</text>
-
-            <rect x="145" y="181" width="105" height="34" rx="6" fill="#eef4ff" stroke="#a8c8f0" stroke-width="1"/>
-            <text x="197" y="202" fill="#4a7fbf" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Camera Handler</text>
-
-            <!-- Arrows col 2 → col 3 -->
-            <line x1="250" y1="72" x2="290" y2="85" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="114" x2="290" y2="107" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="156" x2="290" y2="130" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="250" y1="198" x2="290" y2="152" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-
-            <!-- Column 3: Analysis Modules (pastel amber) -->
-            <rect x="295" y="55" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
-            <text x="350" y="76" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Calibration</text>
-
-            <rect x="295" y="97" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
-            <text x="350" y="118" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Signal Proc</text>
-
-            <rect x="295" y="139" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
-            <text x="350" y="160" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Photometry</text>
-
-            <rect x="295" y="181" width="110" height="34" rx="6" fill="#fff8ee" stroke="#e0c090" stroke-width="1"/>
-            <text x="350" y="202" fill="#a07830" font-family="Inter, system-ui, sans-serif" font-size="8.5" text-anchor="middle" font-weight="500">Map Engine</text>
-
-            <!-- Arrows col 3 → col 4 -->
-            <line x1="405" y1="72" x2="445" y2="85" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="114" x2="445" y2="107" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="156" x2="445" y2="130" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-            <line x1="405" y1="198" x2="445" y2="152" stroke="#ccc" stroke-width="1" marker-end="url(#arrow)"/>
-
-            <!-- Column 4: GUI Tabs (pastel green) -->
-            <rect x="450" y="50" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="69" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Home Tab</text>
-
-            <rect x="450" y="86" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="105" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">INTF Tab</text>
-
-            <rect x="450" y="122" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="141" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Photometry</text>
-
-            <rect x="450" y="158" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="177" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Spectroscopy</text>
-
-            <rect x="450" y="194" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="213" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Map Viz</text>
-
-            <rect x="450" y="230" width="100" height="30" rx="6" fill="#eefaf2" stroke="#a0d8b0" stroke-width="1"/>
-            <text x="500" y="249" fill="#3a8a56" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Flash Overview</text>
-
-            <!-- Output arrow -->
-            <line x1="500" y1="265" x2="500" y2="295" stroke="#888" stroke-width="1" marker-end="url(#arrowDark)"/>
-            <rect x="430" y="298" width="140" height="30" rx="6" fill="#fafafa" stroke="#ccc" stroke-width="1" stroke-dasharray="4 2"/>
-            <text x="500" y="317" fill="#555" font-family="Inter, system-ui, sans-serif" font-size="8" text-anchor="middle" font-weight="500">Publication Figures</text>
-
-            <!-- Legend -->
-            <rect x="10" y="275" width="10" height="10" rx="2" fill="#eef4ff" stroke="#a8c8f0" stroke-width="0.5"/>
-            <text x="26" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">Handlers</text>
-            <rect x="85" y="275" width="10" height="10" rx="2" fill="#fff8ee" stroke="#e0c090" stroke-width="0.5"/>
-            <text x="101" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">Analysis</text>
-            <rect x="160" y="275" width="10" height="10" rx="2" fill="#eefaf2" stroke="#a0d8b0" stroke-width="0.5"/>
-            <text x="176" y="284" fill="#999" font-family="Inter, system-ui, sans-serif" font-size="8">GUI</text>
-
-            <!-- Arrow markers -->
-            <defs>
-              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ccc"/>
-              </marker>
-              <marker id="arrowDark" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/>
-              </marker>
-            </defs>
-          </svg>
+        <div class="hero-pipeline">
+          Raw instrument files &mdash; INTF .dat, FA .csv, TASD binary, photometer .dat, LMA .dat, spectrograph TIFF sequences &mdash; are each handled by a dedicated Python data handler class. Handlers normalize time references, apply calibrations, and expose a clean API to the GUI. Each analysis tab consumes one or more handlers and renders results into an embedded matplotlib canvas. Outputs flow to publication-ready figures or exportable project files (.tgf JSON).
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── ANNOTATED FIGURE SHOWCASE ── -->
-  <section>
-    <div class="container">
-      <p class="section-label">Figures</p>
-      <h2 class="section-title">Annotated Figure Showcase</h2>
-
-      <div class="tab-switcher">
-        <input type="radio" name="fig-tabs" id="tab-a" checked>
-        <input type="radio" name="fig-tabs" id="tab-b">
-
-        <div class="tab-labels">
-          <label for="tab-a">Flash Overview Plot</label>
-          <label for="tab-b">INTF Calibration</label>
-        </div>
-
-        <div class="tab-panels">
-          <div class="tab-panel panel-a">
-            <div class="figure-container">
-              <img src="/images/flash_overview.png" alt="Flash Overview Plot showing synchronized multi-instrument data for a TGF-producing lightning flash">
-
-              <!-- Hotspot: INTF scatter cluster (upper-left area) -->
-              <div class="hotspot" style="top: 20%; left: 35%;">
-                <div class="tooltip">VHF interferometer: 3000+ sources, cosine-shift calibrated via LMA cross-matching</div>
-              </div>
-
-              <!-- Hotspot: FA waveform (mid-left) -->
-              <div class="hotspot" style="top: 48%; left: 25%;">
-                <div class="tooltip">Fast antenna T0 used as master time reference across all instruments</div>
-              </div>
-
-              <!-- Hotspot: 337nm photometer peak (mid-right) -->
-              <div class="hotspot tip-right" style="top: 62%; left: 70%;">
-                <div class="tooltip">30 MHz PXI digitizer; baseline subtracted and irradiance-calibrated per Roncancio et al. 2024</div>
-              </div>
-
-              <!-- Hotspot: Camera frame strip (bottom) -->
-              <div class="hotspot" style="top: 85%; left: 50%;">
-                <div class="tooltip">Phantom v2012 frames linked to time axis via ConnectionPatch</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tab-panel panel-b">
-            <div class="figure-container">
-              <img src="/images/intf_calibration.png" alt="INTF calibration comparison showing LMA cross-match vs NLDN cosine-shift methods">
-
-              <!-- Hotspot: LMA cross-match -->
-              <div class="hotspot" style="top: 35%; left: 40%;">
-                <div class="tooltip">LMA cross-matching method: independently validates calibration offsets using sigma-separation statistics against reference sources</div>
-              </div>
-
-              <!-- Hotspot: Cosine-shift precision -->
-              <div class="hotspot tip-right" style="top: 60%; left: 72%;">
-                <div class="tooltip">Cosine-shift precision: ~0.059 degrees, validated against Mark Stanley's 2024 reference values</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── HARDEST PROBLEMS SOLVED ── -->
-  <section>
-    <div class="container">
-      <p class="section-label">Engineering</p>
-      <h2 class="section-title">Hardest Problems Solved</h2>
-
-      <div class="problem-list">
-        <div class="problem-card">
-          <div class="problem-number">[01]</div>
-          <div class="problem-title">Cross-second reference frame mismatch</div>
-          <p class="problem-body">INTF and SD data are referenced to different clock seconds. This causes a silent failure: no INTF points are found in the expected window, and the application crashes on an empty array. Fixed by exposing a &plusmn;1,000,000 &micro;s offset selector with live data span visualization so the operator can align the reference frames manually before analysis.</p>
-        </div>
-
-        <div class="problem-card">
-          <div class="problem-number">[02]</div>
-          <div class="problem-title">INTF trigger vs FA T0 confusion</div>
-          <p class="problem-body">The INTF header timestamp and the fast antenna T0 microsecond component look deceptively similar but can differ by millions of microseconds. Built a convention enforcing FA T0 as the master time reference across all instruments, eliminating an entire class of off-by-one-second alignment bugs.</p>
-        </div>
-
-        <div class="problem-card">
-          <div class="problem-number">[03]</div>
-          <div class="problem-title">LMA calibration vs NLDN calibration precision</div>
-          <p class="problem-body">NLDN-based cosine shifts are accurate to approximately 0.5 degrees, while LMA cross-matching achieves approximately 0.059 degrees. Both methods were independently derived and validated against Mark Stanley's 2024 reference values using sigma-separation statistics, confirming the LMA approach as the higher-fidelity calibration path.</p>
-        </div>
-
-        <div class="problem-card">
-          <div class="problem-number">[04]</div>
-          <div class="problem-title">777nm PMT saturation (dynode voltage droop)</div>
-          <p class="problem-body">Anomalous initial breakdown pulse spikes in the 777nm channel were traced to the R2228 PMT socket lacking the bypass capacitors present on the UV-band channels. This causes dynode voltage droop under high photon flux, distorting the 337/777 and 391/777 intensity ratios. The artifact is flagged in all downstream spectroscopic analysis.</p>
-        </div>
-
-        <div class="problem-card">
-          <div class="problem-number">[05]</div>
-          <div class="problem-title">Sample rate assumption (20 vs 30 MHz)</div>
-          <p class="problem-body">The GUI originally defaulted to 20 MHz, but the actual PXI-5105 digitizer is configured at 30 MS/s per the instrument paper. At the wrong sample rate, the file reader calculates incorrect channel offsets, causing channels 1 through 3 to read zero real samples as the file pointer advances past EOF after the first channel. Fixed by verifying expected file size against the sample rate and making it a per-load parameter.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── TAB INVENTORY ── -->
+  <!-- ── TAB SLIDESHOW ── -->
   <section>
     <div class="container">
       <p class="section-label">Interface</p>
-      <h2 class="section-title">Tab Inventory</h2>
+      <h2 class="section-title">The Tool</h2>
 
-      <div class="tab-grid">
-        <div class="tab-card">
-          <span class="tab-card-icon">&#9889;</span>
-          <h3>Home (Master Plotter)</h3>
-          <p>Central control panel for loading events and coordinating data across all instruments. Provides the master time-axis plot with synchronized cursors and instrument toggle controls.</p>
-          <span class="badge badge-complete">Complete</span>
+      <div class="slideshow" id="slideshow">
+        <div class="slideshow-image-wrap">
+          <img id="slideshow-img" src="/images/llm/tab_home.png" alt="Tab screenshot">
         </div>
 
-        <div class="tab-card">
-          <span class="tab-card-icon">&#128225;</span>
-          <h3>INTF</h3>
-          <p>VHF interferometer analysis with elevation/azimuth scatter plots, source filtering, and cosine-shift calibration tools. Supports both NLDN and LMA cross-matching workflows.</p>
-          <span class="badge badge-complete">Complete</span>
+        <div class="slideshow-controls">
+          <button class="slideshow-btn" onclick="prevSlide()">&larr; Prev</button>
+          <div class="slideshow-dots" id="slideshow-dots"></div>
+          <button class="slideshow-btn" onclick="nextSlide()">Next &rarr;</button>
         </div>
 
-        <div class="tab-card">
-          <span class="tab-card-icon">&#128300;</span>
-          <h3>Photometry</h3>
-          <p>Optical channel viewer for 337nm, 777nm, and 391nm photometer waveforms. Includes baseline subtraction, irradiance calibration, and multi-channel overlay comparison.</p>
-          <span class="badge badge-complete">Complete</span>
+        <div class="slideshow-caption">
+          <h3 id="slideshow-title"></h3>
+          <p id="slideshow-desc"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SPECTROSCOPY ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Deep Dive</p>
+      <h2 class="section-title">Spectroscopy</h2>
+      <p class="spectro-subheading">From 10&ndash;20 minutes per frame to an entire event in the same time</p>
+
+      <div class="spectro-body">
+        <p>The spectrograph tab processes slitless spectrograph data from the Phantom v711 camera (40,000 fps), which disperses lightning channel light into its component wavelengths across each frame. The core challenge is wavelength calibration: the dispersion axis shifts between frames as the lightning channel moves, so a single static calibration is insufficient. The tab implements a keyframe calibration system &mdash; the user manually assigns known emission lines (H&alpha; at 656nm, OI at 777nm) to 3&ndash;5 reference frames, and the tool interpolates polynomial calibration coefficients between them for every frame in the sequence.</p>
+        <p>Once calibrated, the tab extracts intensity profiles, identifies emission lines, and computes inter-line ratios. These ratios &mdash; particularly 337/777 (temperature proxy) and 391/777 (ionization indicator) &mdash; are the primary spectroscopic diagnostics linking optical observations to TGF production mechanisms. What previously required manually processing each frame in isolation, recalibrating each time, now runs as a guided workflow across the full event sequence.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-tag">Keyframe wavelength calibration</div>
+        <div class="feature-tag">Polynomial coefficient interpolation</div>
+        <div class="feature-tag">Known line identification (H&alpha;, OI, NII)</div>
+        <div class="feature-tag">337/777 temperature proxy</div>
+        <div class="feature-tag">391/777 ionization indicator</div>
+        <div class="feature-tag">Frame-by-frame export</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ENGINEERING NOTES ── -->
+  <section>
+    <div class="container">
+      <p class="section-label">Engineering</p>
+      <h2 class="eng-heading">Engineering Notes</h2>
+
+      <div class="problem-list">
+        <div class="problem-card">
+          <div class="problem-title">Developing an Independent INTF Calibration Method</div>
+          <p class="problem-body">The VHF interferometer measures lightning source direction as direction cosine pairs (cosA, cosB). Converting these to calibrated azimuth and elevation requires two offset constants &mdash; cosShiftA and cosShiftB &mdash; that are specific to each deployment season. The standard approach used external values provided by the Utah group (Mark Stanley), derived from NLDN ground-strike positions. While functional, NLDN accuracy is limited to roughly &plusmn;0.5&deg; due to network geolocation uncertainty.</p>
+          <p class="problem-body" style="margin-top: 12px;">To achieve higher precision, an independent LMA cross-matching method was developed. The approach uses the physical constraint that return strokes reach ground level (elevation = 0&deg;) to anchor cosShiftB, then cross-matches INTF sources against LMA detections &mdash; which are GPS-timed and independently localized &mdash; to solve for cosShiftA. Applied to the 2024 event, this method reproduced Stanley's values to within 0.059&deg; (versus 0.5&deg; for NLDN), validating the approach. For the 2025 season, where Utah values were not yet available, this method became the primary calibration source.</p>
         </div>
 
-        <div class="tab-card">
-          <span class="tab-card-icon">&#128200;</span>
-          <h3>Spectroscopy</h3>
-          <p>Computes and visualizes wavelength intensity ratios (337/777, 391/777) across the flash timeline. Includes PMT saturation flagging and ratio trend analysis tools.</p>
-          <span class="badge badge-progress">In Progress</span>
-        </div>
-
-        <div class="tab-card">
-          <span class="tab-card-icon">&#128506;</span>
-          <h3>Map Visualizer (NLDN)</h3>
-          <p>Geographic plotting of NLDN lightning stroke locations overlaid on the Telescope Array surface detector grid. Supports distance filtering and event clustering display.</p>
-          <span class="badge badge-complete">Complete</span>
-        </div>
-
-        <div class="tab-card">
-          <span class="tab-card-icon">&#127785;</span>
-          <h3>Flash Overview</h3>
-          <p>Publication-quality composite figure generator combining INTF, fast antenna, photometer, and high-speed camera data into a single synchronized multi-panel plot.</p>
-          <span class="badge badge-complete">Complete</span>
+        <div class="problem-card">
+          <div class="problem-title">777nm Channel Saturation at IBP</div>
+          <p class="problem-body">The photometer's 777nm channel (R2228 PMT, bare E678-14C socket) exhibited anomalously large spikes during the initial breakdown pulse stage &mdash; roughly 2&times; the return stroke amplitude &mdash; inconsistent with high-speed camera luminosity. The UV channels (R580 PMT, E2183-500 socket) did not show this behavior. The root cause is the absence of bypass capacitors in the 777nm socket: under large signals, the dynode voltage droops, causing PMT saturation and a slow recovery tail that inflates the apparent signal. The UV channels' sockets include bypass capacitors that suppress this effect. This artifact contaminates 337/777 and 391/777 ratios during the IBP stage and is flagged in all downstream spectroscopic analysis.</p>
         </div>
       </div>
     </div>
@@ -855,6 +588,84 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    var slides = [
+      {
+        title: "Home (Master Plotter)",
+        img: "/images/llm/tab_home.png",
+        desc: "The central multi-instrument view. Overlays FA electric field waveforms, INTF VHF source elevation, TASD surface detector signals, and luminosity data on a shared time axis. The primary diagnostic view for identifying event timing, stroke sequences, and instrument alignment before deeper analysis."
+      },
+      {
+        title: "INTF",
+        img: "/images/llm/tab_intf.png",
+        desc: "Dedicated interferometer analysis tab. Loads raw INTF data, applies cosine-shift calibration, and plots azimuth-elevation scatter with mjet colormap encoding signal strength. Includes the cosine-shift calibration controls and LMA cross-matching tools used to derive season-specific calibration values."
+      },
+      {
+        title: "Timeshift",
+        img: "/images/llm/tab_timeshift.png",
+        desc: "Calculates the timing offset between the INTF/camera reference frame and each TASD surface detector using iterative speed-of-light propagation. Includes diagnostic tools to detect cross-second reference frame mismatches \u2014 the most common failure mode when a flash spans two clock seconds."
+      },
+      {
+        title: "Luminosity",
+        img: "/images/llm/tab_luminosity.png",
+        desc: "Extracts optical intensity from Phantom v2012 high-speed camera frames (40,000 fps) by defining a region of interest and integrating pixel values per frame. What previously required 10\u201320 minutes of manual work per frame \u2014 defining ROIs, exporting values, aligning with other instruments \u2014 now processes an entire event of up to 100 frames in the same time."
+      },
+      {
+        title: "Spectroscopy",
+        img: "/images/llm/tab_spectroscopy.png",
+        desc: "Multi-frame spectrograph analysis with interactive wavelength calibration. See the dedicated section below."
+      },
+      {
+        title: "Photometer",
+        img: "/images/llm/tab_photometer.png",
+        desc: "Loads 30 MHz PXI photometer binary data for the 337nm, 391nm, and 777nm channels, applies manufacturer irradiance calibration, and plots waveforms with optional second-offset correction for cross-second timing alignment. Computes and displays channel ratios (337/777, 391/777, 337/391) as diagnostics for plasma temperature and ionization state."
+      }
+    ];
+
+    var currentSlide = 0;
+
+    function initSlideshow() {
+      var dotsContainer = document.getElementById("slideshow-dots");
+      for (var i = 0; i < slides.length; i++) {
+        var dot = document.createElement("button");
+        dot.className = "slideshow-dot";
+        dot.setAttribute("data-index", i);
+        dot.addEventListener("click", function() {
+          goToSlide(parseInt(this.getAttribute("data-index")));
+        });
+        dotsContainer.appendChild(dot);
+      }
+      showSlide(0);
+    }
+
+    function showSlide(index) {
+      currentSlide = index;
+      document.getElementById("slideshow-img").src = slides[index].img;
+      document.getElementById("slideshow-img").alt = slides[index].title + " tab screenshot";
+      document.getElementById("slideshow-title").textContent = slides[index].title;
+      document.getElementById("slideshow-desc").textContent = slides[index].desc;
+
+      var dots = document.querySelectorAll(".slideshow-dot");
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].className = "slideshow-dot" + (i === index ? " active" : "");
+      }
+    }
+
+    function nextSlide() {
+      showSlide((currentSlide + 1) % slides.length);
+    }
+
+    function prevSlide() {
+      showSlide((currentSlide - 1 + slides.length) % slides.length);
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+    }
+
+    initSlideshow();
+  </script>
 
 </body>
 </html>
