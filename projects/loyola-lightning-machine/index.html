@@ -65,13 +65,8 @@
       transition: opacity 0.2s;
     }
 
-    .breadcrumb-nav a:hover {
-      opacity: 1;
-    }
-
-    .breadcrumb-nav .active {
-      opacity: 1;
-    }
+    .breadcrumb-nav a:hover { opacity: 1; }
+    .breadcrumb-nav .active { opacity: 1; }
 
     .breadcrumb-nav .sep {
       color: #999;
@@ -83,13 +78,22 @@
     .hero {
       padding: 120px 0 80px;
       border-bottom: 1px solid var(--border);
+      position: relative;
+      background-image: url('/images/lightanimation.gif');
+      background-size: cover;
+      background-position: center;
     }
 
-    .hero-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
     }
 
     .hero h1 {
@@ -105,32 +109,24 @@
     .hero .subtitle {
       font-size: 13px;
       color: var(--text-secondary);
-      margin-bottom: 28px;
+      margin-bottom: 20px;
       line-height: 1.6;
       font-weight: 400;
     }
 
-    .stat-pills {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      font-size: 12px;
+    .hero-paper-link {
+      display: inline-block;
+      font-size: 13px;
       font-weight: 400;
-      padding: 8px 16px;
-      border: 1px solid #dee2e6;
-      border-radius: 8px;
-      color: var(--text-light);
-      background: var(--bg);
+      color: var(--text-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      margin-bottom: 28px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
     }
 
-    .pill strong {
-      color: var(--text-primary);
-      font-weight: 600;
-      margin-right: 4px;
-    }
+    .hero-paper-link:hover { opacity: 1; }
 
     .hero-pipeline {
       border-left: 3px solid var(--border-medium);
@@ -140,6 +136,7 @@
       color: var(--text-light);
       font-weight: 300;
       font-style: italic;
+      margin-top: 32px;
     }
 
     /* ── SECTION COMMON ── */
@@ -164,9 +161,7 @@
     }
 
     /* ── SLIDESHOW ── */
-    .slideshow {
-      position: relative;
-    }
+    .slideshow { position: relative; }
 
     .slideshow-image-wrap {
       width: 100%;
@@ -231,13 +226,9 @@
       padding: 0;
     }
 
-    .slideshow-dot.active {
-      background: var(--text-primary);
-    }
+    .slideshow-dot.active { background: var(--text-primary); }
 
-    .slideshow-caption {
-      margin-top: 24px;
-    }
+    .slideshow-caption { margin-top: 24px; }
 
     .slideshow-caption h3 {
       font-size: 16px;
@@ -288,7 +279,7 @@
       text-align: center;
     }
 
-    /* ── ENGINEERING NOTES ── */
+    /* ── NOTES AND CHALLENGES ── */
     .eng-heading {
       font-size: 16px;
       font-weight: 500;
@@ -326,37 +317,20 @@
       font-weight: 300;
     }
 
-    /* ── TECH STACK TABLE ── */
-    .tech-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
+    /* ── TECH STACK ── */
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .tech-table thead th {
-      text-align: left;
-      padding: 14px 16px;
-      border-bottom: 2px solid var(--text-primary);
-      color: var(--text-primary);
-      font-weight: 500;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .tech-table tbody td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
+    .tech-pill {
+      font-size: 12px;
+      font-weight: 400;
+      padding: 7px 14px;
+      border: 1px solid var(--border-medium);
+      border-radius: 6px;
       color: var(--text-light);
-      font-weight: 300;
-    }
-
-    .tech-table tbody td:first-child {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .tech-table tbody tr:hover td {
       background: #fafafa;
     }
 
@@ -403,51 +377,20 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      .hero-inner {
-        grid-template-columns: 1fr;
-      }
-
-      .feature-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .container {
-        padding: 0 24px;
-      }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .container { padding: 0 24px; }
     }
 
     @media (max-width: 600px) {
       .hero { padding: 80px 0 48px; }
       .hero h1 { font-size: 22px; }
       .section-title { font-size: 18px; }
-
       section { padding: 80px 0; }
-
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .slideshow-image-wrap {
-        height: 260px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .stat-pills { gap: 8px; }
-      .pill { font-size: 11px; padding: 6px 12px; }
-
-      .breadcrumb-nav {
-        position: relative;
-        padding: 16px 24px;
-        justify-content: flex-start;
-      }
-
-      .problem-card {
-        padding: 20px 24px;
-      }
+      .feature-grid { grid-template-columns: 1fr; }
+      .slideshow-image-wrap { height: 260px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .breadcrumb-nav { position: relative; padding: 16px 24px; justify-content: flex-start; }
+      .problem-card { padding: 20px 24px; }
     }
   </style>
 </head>
@@ -467,19 +410,13 @@
   <!-- ── HERO ── -->
   <section class="hero">
     <div class="container">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <h1>Loyola Lightning Machine</h1>
-          <p class="subtitle">Multi-instrument GUI for TGF research &middot; Python &middot; tkinter &middot; 2024&ndash;2026</p>
-          <div class="stat-pills">
-            <span class="pill"><strong>8</strong> instrument types</span>
-            <span class="pill"><strong>6</strong> analysis tabs</span>
-            <span class="pill"><strong>2</strong> published events</span>
-          </div>
-        </div>
-        <div class="hero-pipeline">
-          Raw instrument files &mdash; INTF .dat, FA .csv, TASD binary, photometer .dat, LMA .dat, spectrograph TIFF sequences &mdash; are each handled by a dedicated Python data handler class. Handlers normalize time references, apply calibrations, and expose a clean API to the GUI. Each analysis tab consumes one or more handlers and renders results into an embedded matplotlib canvas. Outputs flow to publication-ready figures or exportable project files (.tgf JSON).
-        </div>
+      <h1>Loyola Lightning Machine</h1>
+      <p class="subtitle">Multi-instrument GUI for TGF research &middot; Python &middot; tkinter &middot; 2024&ndash;2026</p>
+      <a class="hero-paper-link" href="https://essopenarchive.org/doi/full/10.22541/essoar.176548901.18304882/v1" target="_blank" rel="noopener">
+        Preliminary paper (ESSOAr preprint) &rarr;
+      </a>
+      <div class="hero-pipeline">
+        Raw instrument files (INTF .dat, FA .csv, TASD binary, photometer .dat, LMA .dat, spectrograph TIFF sequences) are each handled by a dedicated Python data handler class. Handlers normalize time references, apply calibrations, and expose a clean API to the GUI. Each analysis tab consumes one or more handlers and renders results into an embedded matplotlib canvas. Outputs flow to publication-ready figures or exportable project files (.tgf JSON).
       </div>
     </div>
   </section>
@@ -517,37 +454,34 @@
       <p class="spectro-subheading">From 10&ndash;20 minutes per frame to an entire event in the same time</p>
 
       <div class="spectro-body">
-        <p>The spectrograph tab processes slitless spectrograph data from the Phantom v711 camera (40,000 fps), which disperses lightning channel light into its component wavelengths across each frame. The core challenge is wavelength calibration: the dispersion axis shifts between frames as the lightning channel moves, so a single static calibration is insufficient. The tab implements a keyframe calibration system &mdash; the user manually assigns known emission lines (H&alpha; at 656nm, OI at 777nm) to 3&ndash;5 reference frames, and the tool interpolates polynomial calibration coefficients between them for every frame in the sequence.</p>
-        <p>Once calibrated, the tab extracts intensity profiles, identifies emission lines, and computes inter-line ratios. These ratios &mdash; particularly 337/777 (temperature proxy) and 391/777 (ionization indicator) &mdash; are the primary spectroscopic diagnostics linking optical observations to TGF production mechanisms. What previously required manually processing each frame in isolation, recalibrating each time, now runs as a guided workflow across the full event sequence.</p>
+        <p>The spectrograph tab processes slitless spectrograph data from the Phantom v711 camera (40,000 fps), which disperses lightning channel light into its component wavelengths across each frame. The core challenge is wavelength calibration: the dispersion axis shifts between frames as the lightning channel moves, so a single static calibration is insufficient. The tab implements a keyframe calibration system where the user manually assigns known emission lines (H&alpha; at 656nm, OI at 777nm) to 3&ndash;5 reference frames, and the tool interpolates polynomial calibration coefficients between them for every frame in the sequence.</p>
       </div>
 
       <div class="feature-grid">
         <div class="feature-tag">Keyframe wavelength calibration</div>
         <div class="feature-tag">Polynomial coefficient interpolation</div>
         <div class="feature-tag">Known line identification (H&alpha;, OI, NII)</div>
-        <div class="feature-tag">337/777 temperature proxy</div>
-        <div class="feature-tag">391/777 ionization indicator</div>
         <div class="feature-tag">Frame-by-frame export</div>
       </div>
     </div>
   </section>
 
-  <!-- ── ENGINEERING NOTES ── -->
+  <!-- ── NOTES AND CHALLENGES ── -->
   <section>
     <div class="container">
       <p class="section-label">Engineering</p>
-      <h2 class="eng-heading">Engineering Notes</h2>
+      <h2 class="eng-heading">Notes and Challenges</h2>
 
       <div class="problem-list">
         <div class="problem-card">
           <div class="problem-title">Developing an Independent INTF Calibration Method</div>
-          <p class="problem-body">The VHF interferometer measures lightning source direction as direction cosine pairs (cosA, cosB). Converting these to calibrated azimuth and elevation requires two offset constants &mdash; cosShiftA and cosShiftB &mdash; that are specific to each deployment season. The standard approach used external values provided by the Utah group (Mark Stanley), derived from NLDN ground-strike positions. While functional, NLDN accuracy is limited to roughly &plusmn;0.5&deg; due to network geolocation uncertainty.</p>
-          <p class="problem-body" style="margin-top: 12px;">To achieve higher precision, an independent LMA cross-matching method was developed. The approach uses the physical constraint that return strokes reach ground level (elevation = 0&deg;) to anchor cosShiftB, then cross-matches INTF sources against LMA detections &mdash; which are GPS-timed and independently localized &mdash; to solve for cosShiftA. Applied to the 2024 event, this method reproduced Stanley's values to within 0.059&deg; (versus 0.5&deg; for NLDN), validating the approach. For the 2025 season, where Utah values were not yet available, this method became the primary calibration source.</p>
+          <p class="problem-body">The VHF interferometer measures lightning source direction as direction cosine pairs (cosA, cosB). Converting these to calibrated azimuth and elevation requires two offset constants, cosShiftA and cosShiftB, specific to each deployment season. The standard approach used external values provided by the Utah group (Mark Stanley), derived from NLDN ground-strike positions. While functional, NLDN accuracy is limited to roughly &plusmn;0.5&deg; due to network geolocation uncertainty.</p>
+          <p class="problem-body" style="margin-top: 12px;">To achieve higher precision, an independent LMA cross-matching method was developed. The approach uses the physical constraint that return strokes reach ground level (elevation = 0&deg;) to anchor cosShiftB, then cross-matches INTF sources against LMA detections, which are GPS-timed and independently localized, to solve for cosShiftA. Applied to the 2024 event, this method reproduced Stanley's values to within 0.059&deg; (versus 0.5&deg; for NLDN), validating the approach. For the 2025 season, where Utah values were not yet available, this method became the primary calibration source.</p>
         </div>
 
         <div class="problem-card">
           <div class="problem-title">777nm Channel Saturation at IBP</div>
-          <p class="problem-body">The photometer's 777nm channel (R2228 PMT, bare E678-14C socket) exhibited anomalously large spikes during the initial breakdown pulse stage &mdash; roughly 2&times; the return stroke amplitude &mdash; inconsistent with high-speed camera luminosity. The UV channels (R580 PMT, E2183-500 socket) did not show this behavior. The root cause is the absence of bypass capacitors in the 777nm socket: under large signals, the dynode voltage droops, causing PMT saturation and a slow recovery tail that inflates the apparent signal. The UV channels' sockets include bypass capacitors that suppress this effect. This artifact contaminates 337/777 and 391/777 ratios during the IBP stage and is flagged in all downstream spectroscopic analysis.</p>
+          <p class="problem-body">The photometer's 777nm channel (R2228 PMT, bare E678-14C socket) exhibited anomalously large spikes during the initial breakdown pulse stage, roughly 2x the return stroke amplitude, inconsistent with high-speed camera luminosity. The UV channels (R580 PMT, E2183-500 socket) did not show this behavior. The root cause is the absence of bypass capacitors in the 777nm socket: under large signals, the dynode voltage droops, causing PMT saturation and a slow recovery tail that inflates the apparent signal. The UV channels' sockets include bypass capacitors that suppress this effect. This artifact contaminates 337/777 and 391/777 ratios during the IBP stage and is flagged in all downstream spectroscopic analysis.</p>
         </div>
       </div>
     </div>
@@ -558,24 +492,13 @@
     <div class="container">
       <p class="section-label">Stack</p>
       <h2 class="section-title">Tech Stack</h2>
-
-      <table class="tech-table">
-        <thead>
-          <tr>
-            <th>Technology</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Python 3</td><td>Core language</td></tr>
-          <tr><td>tkinter</td><td>GUI framework</td></tr>
-          <tr><td>matplotlib (TkAgg)</td><td>Embedded plots</td></tr>
-          <tr><td>numpy + scipy</td><td>Signal processing and statistics</td></tr>
-          <tr><td>pandas</td><td>Data I/O</td></tr>
-          <tr><td>Jekyll</td><td>Site framework</td></tr>
-          <tr><td>GitHub Pages</td><td>Hosting</td></tr>
-        </tbody>
-      </table>
+      <div class="tech-pills">
+        <span class="tech-pill">Python 3</span>
+        <span class="tech-pill">tkinter</span>
+        <span class="tech-pill">matplotlib (TkAgg)</span>
+        <span class="tech-pill">numpy + scipy</span>
+        <span class="tech-pill">pandas</span>
+      </div>
     </div>
   </section>
 
@@ -604,12 +527,12 @@
       {
         title: "Timeshift",
         img: "/images/llm/tab_timeshift.png",
-        desc: "Calculates the timing offset between the INTF/camera reference frame and each TASD surface detector using iterative speed-of-light propagation. Includes diagnostic tools to detect cross-second reference frame mismatches \u2014 the most common failure mode when a flash spans two clock seconds."
+        desc: "Calculates the timing offset between the INTF/camera reference frame and each TASD surface detector using iterative speed-of-light propagation. Includes diagnostic tools to detect cross-second reference frame mismatches, the most common failure mode when a flash spans two clock seconds."
       },
       {
         title: "Luminosity",
         img: "/images/llm/tab_luminosity.png",
-        desc: "Extracts optical intensity from Phantom v2012 high-speed camera frames (40,000 fps) by defining a region of interest and integrating pixel values per frame. What previously required 10\u201320 minutes of manual work per frame \u2014 defining ROIs, exporting values, aligning with other instruments \u2014 now processes an entire event of up to 100 frames in the same time."
+        desc: "Extracts optical intensity from Phantom v2012 high-speed camera frames (40,000 fps) by defining a region of interest and integrating pixel values per frame. What previously required 10 to 20 minutes of manual work per frame now processes an entire event of up to 100 frames in the same time."
       },
       {
         title: "Spectroscopy",
@@ -652,17 +575,9 @@
       }
     }
 
-    function nextSlide() {
-      showSlide((currentSlide + 1) % slides.length);
-    }
-
-    function prevSlide() {
-      showSlide((currentSlide - 1 + slides.length) % slides.length);
-    }
-
-    function goToSlide(index) {
-      showSlide(index);
-    }
+    function nextSlide() { showSlide((currentSlide + 1) % slides.length); }
+    function prevSlide() { showSlide((currentSlide - 1 + slides.length) % slides.length); }
+    function goToSlide(index) { showSlide(index); }
 
     initSlideshow();
   </script>
