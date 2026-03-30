@@ -117,45 +117,35 @@
           </p>
 
           <p>
-            I had a general interest in Quantum Computing for a while, and decided to
-            make a small scale self-project to learn about the available infrastructure,
-            have experience developing some code, and better my understanding of QC
-            fundamentals.
-            <a href="/qNoise/" style="color: #4a7fff; text-decoration: underline;">Check out the full dashboard here.</a>
+            <a href="/qNoise/" style="color: #4a7fff; text-decoration: underline;">View the live qNoise dashboard &rarr;</a>
           </p>
 
           <p>
-            I call this project qNoise, and developed a semi-automated pipeline to
-            characterize noise on real quantum hardware and benchmark quantum compilation
-            strategies. Every data point was measured on IBM's ibm_fez superconducting
-            processor. The question I'm trying to answer: does Infleqtion's Superstaq
-            compiler create circuits that perform better on noisy hardware than Qiskit's
-            default optimizer?
+            I had a general interest in Quantum Computing for a while, and decided to
+            make a small scale self-project to learn about the available infrastructure,
+            have experience developing some code, and better my understanding of QC
+            fundamentals. I developed a semi-automated pipeline to characterize noise on
+            real quantum hardware and benchmark quantum compilation strategies. Every data
+            point was measured on IBM's ibm_fez superconducting processor. The question
+            I'm trying to answer: does Infleqtion's Superstaq compiler create circuits
+            that perform better on noisy hardware than Qiskit's default optimizer?
           </p>
 
           <h4>What It Measures</h4>
           <ul>
-            <li><strong>T1 (Energy Relaxation)</strong> &mdash; How long a qubit holds the |1&rangle; state before decaying</li>
-            <li><strong>T2 (Coherence, Hahn Echo)</strong> &mdash; How long a qubit maintains quantum superposition</li>
-            <li><strong>Readout Error</strong> &mdash; Measurement confusion matrix for each qubit</li>
-            <li><strong>Compilation Fidelity</strong> &mdash; Hellinger fidelity of Qiskit vs Superstaq compiled circuits on real hardware</li>
+            <li><strong>T1 (Energy Relaxation)</strong> — How long a qubit holds the |1&rangle; state before decaying</li>
+            <li><strong>T2 (Coherence, Hahn Echo)</strong> — How long a qubit maintains quantum superposition</li>
+            <li><strong>Readout Error</strong> — Measurement confusion matrix for each qubit</li>
+            <li><strong>Compilation Fidelity</strong> — Hellinger fidelity of Qiskit vs Superstaq compiled circuits on real hardware</li>
           </ul>
 
           <h4>Key Finding</h4>
           <p>
-            Qubit noise properties drift significantly over hours &mdash; T1 values ranged
-            from 23&ndash;266 &mu;s across runs, and qubit rankings flipped entirely within
-            2.5 hours. In compilation benchmarks, Superstaq achieved higher fidelity on
-            QFT circuits despite deeper compiled depth, by minimizing two-qubit gate count
-            &mdash; the dominant error source on superconducting hardware.
-          </p>
-
-          <h4>Live Dashboard</h4>
-          <p>
-            <a href="/qNoise/" style="color: #4a7fff; text-decoration: underline;">
-              View the live qNoise dashboard &rarr;
-            </a>
-            <br />Updated with new hardware measurements as they are collected.
+            Qubit noise properties drift significantly over hours. T1 values ranged from
+            23 to 266 µs across runs, and qubit rankings flipped entirely within 2.5
+            hours. In compilation benchmarks, Superstaq achieved higher fidelity on QFT
+            circuits despite deeper compiled depth, by minimizing two-qubit gate count,
+            the dominant error source on superconducting hardware.
           </p>
 
           <p class="project-detail-tech">
