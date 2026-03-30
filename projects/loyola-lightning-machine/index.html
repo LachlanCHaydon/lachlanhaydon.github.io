@@ -516,33 +516,13 @@
     var slides = [
       {
         title: "Home (Master Plotter)",
-        img: "/images/llm/tab_home.png",
+        img: "/images/mainTab.png",
         desc: "The central multi-instrument view. Overlays FA electric field waveforms, INTF VHF source elevation, TASD surface detector signals, and luminosity data on a shared time axis. The primary diagnostic view for identifying event timing, stroke sequences, and instrument alignment before deeper analysis."
       },
       {
-        title: "INTF",
-        img: "/images/llm/tab_intf.png",
-        desc: "Dedicated interferometer analysis tab. Loads raw INTF data, applies cosine-shift calibration, and plots azimuth-elevation scatter with mjet colormap encoding signal strength. Includes the cosine-shift calibration controls and LMA cross-matching tools used to derive season-specific calibration values."
-      },
-      {
-        title: "Timeshift",
-        img: "/images/llm/tab_timeshift.png",
-        desc: "Calculates the timing offset between the INTF/camera reference frame and each TASD surface detector using iterative speed-of-light propagation. Includes diagnostic tools to detect cross-second reference frame mismatches, the most common failure mode when a flash spans two clock seconds."
-      },
-      {
-        title: "Luminosity",
-        img: "/images/llm/tab_luminosity.png",
-        desc: "Extracts optical intensity from Phantom v2012 high-speed camera frames (40,000 fps) by defining a region of interest and integrating pixel values per frame. What previously required 10 to 20 minutes of manual work per frame now processes an entire event of up to 100 frames in the same time."
-      },
-      {
         title: "Spectroscopy",
-        img: "/images/llm/tab_spectroscopy.png",
-        desc: "Multi-frame spectrograph analysis with interactive wavelength calibration. See the dedicated section below."
-      },
-      {
-        title: "Photometer",
-        img: "/images/llm/tab_photometer.png",
-        desc: "Loads 30 MHz PXI photometer binary data for the 337nm, 391nm, and 777nm channels, applies manufacturer irradiance calibration, and plots waveforms with optional second-offset correction for cross-second timing alignment. Computes and displays channel ratios (337/777, 391/777, 337/391) as diagnostics for plasma temperature and ionization state."
+        img: "/images/spectroTab.png",
+        desc: "Multi-frame spectrograph analysis with interactive wavelength calibration. Processes slitless spectrograph data from the Phantom v711 camera (40,000 fps), implements keyframe calibration where the user assigns known emission lines to reference frames, and interpolates polynomial calibration coefficients across the full sequence."
       }
     ];
 
