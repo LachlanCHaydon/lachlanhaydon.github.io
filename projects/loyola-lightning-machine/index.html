@@ -429,7 +429,7 @@
 
       <div class="slideshow" id="slideshow">
         <div class="slideshow-image-wrap">
-          <img id="slideshow-img" src="/images/llm/tab_home.png" alt="Tab screenshot">
+          <img id="slideshow-img" src="/images/HomePlotter.png" alt="Tab screenshot">
         </div>
 
         <div class="slideshow-controls">
@@ -516,13 +516,38 @@
     var slides = [
       {
         title: "Home (Master Plotter)",
-        img: "/images/mainTab.png",
+        img: "/images/HomePlotter.png",
         desc: "The central multi-instrument view. Overlays FA electric field waveforms, INTF VHF source elevation, TASD surface detector signals, and luminosity data on a shared time axis. The primary diagnostic view for identifying event timing, stroke sequences, and instrument alignment before deeper analysis."
       },
       {
+        title: "INTF",
+        img: "/images/INTFTab.png",
+        desc: "Dedicated interferometer analysis tab. Loads raw INTF data, applies cosine-shift calibration, and plots azimuth-elevation scatter with mjet colormap encoding signal strength. Includes the cosine-shift calibration controls and LMA cross-matching tools used to derive season-specific calibration values."
+      },
+      {
+        title: "Timeshift",
+        img: "/images/TimeshiftTab.png",
+        desc: "Calculates the timing offset between the INTF/camera reference frame and each TASD surface detector using iterative speed-of-light propagation. Includes diagnostic tools to detect cross-second reference frame mismatches, the most common failure mode when a flash spans two clock seconds."
+      },
+      {
+        title: "Luminosity",
+        img: "/images/LuminosityTab.png",
+        desc: "Extracts optical intensity from Phantom v2012 high-speed camera frames (40,000 fps) by defining a region of interest and integrating pixel values per frame. What previously required 10 to 20 minutes of manual work per frame now processes an entire event of up to 100 frames in the same time."
+      },
+      {
         title: "Spectroscopy",
-        img: "/images/spectroTab.png",
+        img: "/images/SpetroscopyTab.png",
         desc: "Multi-frame spectrograph analysis with interactive wavelength calibration. Processes slitless spectrograph data from the Phantom v711 camera (40,000 fps), implements keyframe calibration where the user assigns known emission lines to reference frames, and interpolates polynomial calibration coefficients across the full sequence."
+      },
+      {
+        title: "Photometer",
+        img: "/images/Photometer.png",
+        desc: "Loads 30 MHz PXI photometer binary data for the 337nm, 391nm, and 777nm channels, applies manufacturer irradiance calibration, and plots waveforms with optional second-offset correction for cross-second timing alignment. Computes and displays channel ratios (337/777, 391/777, 337/391) as diagnostics for plasma temperature and ionization state."
+      },
+      {
+        title: "NLDN / Map Visualizer",
+        img: "/images/NLDNTab.png",
+        desc: "Geospatial visualization of lightning event locations using NLDN network data. Maps ground strike positions relative to the Telescope Array detector grid for spatial correlation with TGF observations."
       }
     ];
 
